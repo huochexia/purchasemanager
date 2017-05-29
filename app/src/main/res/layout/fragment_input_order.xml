@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <include layout="@layout/commodity_item_header"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/supply_number_price_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+    </android.support.v7.widget.RecyclerView>
+    <LinearLayout
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/input_confirm_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="确 定"
+            android:visibility="gone"
+            android:textSize="18sp"/>
+        <TextView
+            android:visibility="gone"
+            android:layout_marginLeft="8dp"
+            android:id="@+id/input_item_num_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="项目："
+            android:textColor="@color/backgroudColor"
+            android:textSize="16sp"/>
+        <TextView
+            android:visibility="invisible"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/input_item_num_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="#e6ea08"
+            android:textSize="16sp"/>
+        <TextView
+            android:layout_marginLeft="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="金额合计："
+            android:textColor="@color/backgroudColor"
+            android:textSize="16sp"/>
+        <TextView
+            android:id="@+id/input_price_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.0"
+            android:textColor="#e6ea08"
+            android:textSize="16sp"/>
+    </LinearLayout>
+</LinearLayout>

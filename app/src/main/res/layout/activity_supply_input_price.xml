@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <include layout="@layout/toolbar_layout"/>
+    <include layout="@layout/commodity_item_header"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/supply_input_price_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+    </android.support.v7.widget.RecyclerView>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+       <LinearLayout
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal"
+           android:layout_centerVertical="true">
+           <TextView
+               android:id="@+id/supply_price_sum"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="小计:"
+               android:textSize="16sp"
+               android:visibility="gone"/>
+
+       </LinearLayout>
+        <Button
+            android:id="@+id/supply_commit_price_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="提    交"/>
+
+    </RelativeLayout>
+</LinearLayout>

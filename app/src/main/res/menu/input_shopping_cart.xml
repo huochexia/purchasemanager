@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:title="加入购物车"
+        android:id="@+id/add_shopping_cart"
+        android:icon="@mipmap/put_in_shopping_cart"
+        app:showAsAction="always"/>
+    <item android:id="@+id/add_commodity_menu"
+    android:title="新增商品"
+    android:icon="@mipmap/add_commodity"
+    app:showAsAction="never"
+    />
+</menu>

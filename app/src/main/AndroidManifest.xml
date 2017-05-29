@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.hbsx.purordermanage">
+    <!--BmobSDK所需的权限 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!--推送所需的权限-->
+    <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <application
+        android:name=".POManageApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/cart"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme.NoActionBar">
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".RepairPassWordActivity"
+            android:parentActivityName=".LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Manager.ManagerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Manager.CommodityDetailActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Request.RequestNoteMainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Request.RequestNoteSelectActivity"
+            android:parentActivityName=".Request.RequestNoteMainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Request.ShoppingCartActivity"
+            android:parentActivityName=".Request.RequestNoteMainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Request.RequestNoteNumSearchActivity"
+            android:parentActivityName=".Request.RequestNoteMainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Request.RequestNoteDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Purchase.PurchaseMainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Purchase.SendToProviderActivity"
+            android:parentActivityName=".Purchase.PurchaseMainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Purchase.ProviderOrderSearchActivity"
+            android:parentActivityName=".Purchase.PurchaseMainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Purchase.PurchaseDetailActivity"
+            android:parentActivityName=".Purchase.ProviderOrderSearchActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Supply.SupplyMainActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Supply.SupplyDayOrderActivity"
+            android:parentActivityName=".Supply.SupplyMainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Examine.ExamineMainActivity"
+            android:parentActivityName=".Purchase.PurchaseMainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Examine.ProviderListActivity"
+            android:parentActivityName=".Examine.ExamineMainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Examine.ProviderOrderActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".InputData.InputDataMainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".InputData.SelectProviderActivity"
+            android:parentActivityName=".InputData.InputDataMainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".InputData.LookAndInputOrderActivity"
+            android:parentActivityName=".InputData.SelectProviderActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Comprehensive.RequestPurchaseExamineInputActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Comprehensive.RequestAndExamineActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".FirstCheck.EmployeeListActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".FirstCheck.FirstCheckDetailActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".AgainCheck.AgainCheckMainActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".AgainCheck.CheckRequestNoteActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".AgainCheck.AgainCheckMainActivity"/>
+
+        <!-- BmobPush 推送服务 start -->
+        <service
+            android:name="cn.bmob.push.lib.service.PushService"
+            android:exported="true"
+            android:label="PushService"
+            android:permission="cn.bmob.permission.push"
+            android:process="cn.bmob.push">
+            <intent-filter>
+                <action android:name="cn.bmob.push.lib.service.PushService" />
+            </intent-filter>
+        </service>
+
+        <receiver android:name="cn.bmob.push.PushReceiver">
+            <intent-filter android:priority="2147483647"><!--优先级加最高-->
+                <!-- 系统启动完成后会调用 -->
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <!-- 解锁完成后会调用 -->
+                <action android:name="android.intent.action.USER_PRESENT" />
+                <!-- 监听网络连通性 -->
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <!-- BmobPush end -->
+    </application>
+
+</manifest>

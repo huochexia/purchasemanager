@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/add_user_form"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TableRow>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="@string/user_name"
+            android:textSize="20sp" />
+        <!--输入用户姓名的文本框-->
+        <EditText
+            android:id="@+id/add_user_form_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请输入用户姓名"
+            android:textSize="18sp" />
+    </TableRow>
+
+    <TableRow>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="@string/user_phone"
+            android:textSize="20sp" />
+        <!--输入用户姓名的文本框-->
+        <EditText
+            android:id="@+id/add_user_form_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请输入用户电话号码"
+            android:textSize="18sp" />
+    </TableRow>
+
+    <TableRow>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="@string/user_role"
+            android:textSize="20sp" />
+        <!--输入商品单位的下拉列表-->
+        <Spinner
+            android:id="@+id/add_user_form_role_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbarSize="18sp" />
+    </TableRow>
+
+</TableLayout>

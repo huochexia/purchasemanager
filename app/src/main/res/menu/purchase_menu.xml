@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/today_purchase_order"
+        android:title="今天订货单"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/yesterday_purchase_order"
+        android:title="昨天订货单"
+        app:showAsAction="never"/>
+</menu>
