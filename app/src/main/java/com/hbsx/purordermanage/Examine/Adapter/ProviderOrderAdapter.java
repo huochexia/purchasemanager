@@ -112,8 +112,8 @@ public class ProviderOrderAdapter extends RecyclerView.Adapter<ProviderOrderAdap
                     order.setActualNum(Float.parseFloat(s + ""));
                      //比较订量与实数
                     //实际数量不能大于订量的5%
-                    boolean less = (order.getActualNum() - purchaseNum) > (purchaseNum * 0.05) ? true : false;
-                    if (!less) {
+//                    boolean less = (order.getActualNum() - purchaseNum) > (purchaseNum * 0.05) ? true : false;
+//                    if (!less) {
                         // 存入数据库
                         final String id = order.getObjectId();
                         order.update(id, new UpdateListener() {
@@ -122,10 +122,10 @@ public class ProviderOrderAdapter extends RecyclerView.Adapter<ProviderOrderAdap
 
                             }
                         });
-                    } else {
-                        Toast.makeText(POManageApplication.getContext(), "实际数量比订单多,请调整送货量！", Toast.LENGTH_SHORT).show();
-                        holder.mActualNum.setText("0.0");
-                    }
+//                    } else {
+//                        Toast.makeText(POManageApplication.getContext(), "实际数量比订单多,请调整送货量！", Toast.LENGTH_SHORT).show();
+//                        holder.mActualNum.setText("0.0");
+//                    }
                 }
 
             }
