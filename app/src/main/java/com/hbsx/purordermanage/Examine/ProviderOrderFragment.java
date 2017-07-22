@@ -91,7 +91,7 @@ public class ProviderOrderFragment extends Fragment {
                 saveOrderState(mPurchaseOrderList);
             }
         });
-        if (mOrderState == 2) {
+        if (mOrderState == 3) {
             mCommitActualNum.setVisibility(View.GONE);
         }
         mActualNumLayout = (RelativeLayout) view.findViewById(R.id.commodity_item_header_actualnum);
@@ -111,8 +111,8 @@ public class ProviderOrderFragment extends Fragment {
     private void saveOrderState(List<PurchaseOrder> list) {
         final List<BmobObject> objects = new ArrayList<>();
         for (PurchaseOrder order : list) {
-            if (order.getActualNum() != 0 && order.getOrderState() < 2) {//实际数量不等于0且未录入
-                order.setOrderState(2);
+            if (order.getActualNum() != 0 && order.getOrderState() < 3) {//实际数量不等于0且未录入
+                order.setOrderState(3);
                 objects.add(order);
             }
         }
@@ -218,7 +218,7 @@ public class ProviderOrderFragment extends Fragment {
                     mPurchaseOrderList = (List<PurchaseOrder>) msg.getData().getSerializable("orders");
                     mAdapter = new ProviderOrderAdapter(mPurchaseOrderList, mOrderState);
                     mRecyclerView.setAdapter(mAdapter);
-                    if (mOrderState == 2) {
+                    if (mOrderState == 3) {
                         //关联ItemTouchHelper和RecyclerView
                         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mAdapter);
                         mItemTouchHelper = new ItemTouchHelper(callback);
@@ -257,8 +257,8 @@ public class ProviderOrderFragment extends Fragment {
         if (mOrderState == 1) {
             getPurchaseOrderList(1);
         }
-        if (mOrderState == 2) {
-            getPurchaseOrderList(2);
+        if (mOrderState == 3) {
+            getPurchaseOrderList(3);
         }
 
     }

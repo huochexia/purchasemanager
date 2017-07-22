@@ -190,7 +190,13 @@ public class SupplyMainActivity extends BaseActivity {
         mCalculateBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                getTotal(mStartDateText.getText().toString(), mEndDateText.getText().toString());
+//                getTotal(mStartDateText.getText().toString(), mEndDateText.getText().toString());
+                String start = mStartDateText.getText().toString();
+                String end = mEndDateText.getText().toString();
+                Intent intent = new Intent(SupplyMainActivity.this, SummationForVariety.class);
+                intent.putExtra("start_date", start);
+                intent.putExtra("end_date", end);
+                startActivity(intent);
             }
         });
         mSummaryPriceText = (TextView) findViewById(R.id.sum_price_result);

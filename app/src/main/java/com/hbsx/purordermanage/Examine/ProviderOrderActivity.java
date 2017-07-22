@@ -50,7 +50,7 @@ public class ProviderOrderActivity extends BaseActivity {
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         MyViewPagerAdapter viewPagerAdapter = new MyViewPagerAdapter(getSupportFragmentManager());
         viewPagerAdapter.addFragment(ProviderOrderFragment.newInstance(1,mOrderDate,provider),"未验货");
-        viewPagerAdapter.addFragment(ProviderOrderFragment.newInstance(2,mOrderDate,provider),"已检验");
+        viewPagerAdapter.addFragment(ProviderOrderFragment.newInstance(3,mOrderDate,provider),"已检验");
         mViewPager.setAdapter(viewPagerAdapter);
 
         mTabLayout = (TabLayout) findViewById(R.id.supply_day_tab_layout);

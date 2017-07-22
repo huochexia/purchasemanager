@@ -87,7 +87,7 @@ public class LookAndInputOrderFragment extends Fragment {
         actulNumLayout.setVisibility(View.VISIBLE);
         RelativeLayout priceLayout = (RelativeLayout) view.findViewById(R.id.commodity_item_header_price);
         priceLayout.setVisibility(View.VISIBLE);
-        //状态为2，表示未录入；状态为3，表示已录入完毕
+        //状态为3，表示未录入；状态为4，表示已录入完毕
         switch (mOrderState) {
             case 3:
                 // 表头选择项

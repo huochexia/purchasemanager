@@ -86,7 +86,7 @@ public class SupplyDayOrderFragment extends Fragment {
         mPriceLayout.setVisibility(View.VISIBLE);
         mPriceSum = (TextView) view.findViewById(R.id.supply_price_sum1);
         mCommitPrice = (Button) view.findViewById(R.id.supply_commit_price_btn1);
-        mCommitPrice.setEnabled(Utility.compareTime(" 10:30:00"));//大于当天10点半后，不允许确认。
+//        mCommitPrice.setEnabled(Utility.compareTime(" 10:30:00"));//大于当天10点半后，不允许确认。
         mCommitPrice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

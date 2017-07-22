@@ -27,6 +27,17 @@ public class PurchaseOrder extends BmobObject {
     private Float price = 0.0f;
     //商品实际数量
     private Float actualNum = 0.0f;
+    //商品金额
+    private Float sum = 0.0f;
+
+    public Float getSum() {
+        return sum;
+    }
+
+    public void setSum(Float sum) {
+        this.sum = sum;
+    }
+
     //供货商
     private User provider;
     //供货商名称

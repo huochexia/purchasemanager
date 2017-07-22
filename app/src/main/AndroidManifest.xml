@@ -78,7 +78,10 @@
         <activity
             android:name=".Supply.SupplyMainActivity"
             android:screenOrientation="portrait" />
-
+        <activity
+            android:name=".Supply.SummationForVariety"
+            android:parentActivityName=".Supply.SupplyMainActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Supply.SupplyDayOrderActivity"
             android:parentActivityName=".Supply.SupplyMainActivity"
@@ -108,17 +111,22 @@
         <activity
             android:name=".Comprehensive.RequestPurchaseExamineInputActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".Comprehensive.RequestAndExamineActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".FirstCheck.EmployeeListActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".FirstCheck.FirstCheckDetailActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".AgainCheck.AgainCheckMainActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".AgainCheck.CheckRequestNoteActivity"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".AgainCheck.AgainCheckMainActivity"/>
+        <activity
+            android:name=".Comprehensive.RequestAndExamineActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".FirstCheck.EmployeeListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".FirstCheck.FirstCheckDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".AgainCheck.AgainCheckMainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".AgainCheck.CheckRequestNoteActivity"
+            android:parentActivityName=".AgainCheck.AgainCheckMainActivity"
+            android:screenOrientation="portrait" />
 
         <!-- BmobPush 推送服务 start -->
         <service
