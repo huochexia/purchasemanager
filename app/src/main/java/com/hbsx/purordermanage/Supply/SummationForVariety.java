@@ -74,11 +74,13 @@ public class SummationForVariety extends BaseActivity {
         and.add(queryUser);
 
         BmobQuery<PurchaseOrder> startQ = new BmobQuery<>();
-        startQ.addWhereGreaterThanOrEqualTo("createdAt", new BmobDate(Utility.getDate(start + " 00:00:00")));
+//        startQ.addWhereGreaterThanOrEqualTo("createdAt", new BmobDate(Utility.getDate(start + " 00:00:00")));
+        startQ.addWhereGreaterThanOrEqualTo("orderDate", start);
         and.add(startQ);
 
         BmobQuery<PurchaseOrder> endQ = new BmobQuery<>();
-        endQ.addWhereLessThanOrEqualTo("createdAt", new BmobDate(Utility.getDate(end + " 23:59:59")));
+//        endQ.addWhereLessThanOrEqualTo("createdAt", new BmobDate(Utility.getDate(end + " 23:59:59")));
+        endQ.addWhereLessThanOrEqualTo("orderDate", end);
         and.add(endQ);
         BmobQuery<PurchaseOrder> stateQ = new BmobQuery<>();
         stateQ.addWhereEqualTo("orderState", 4);//已确认的订单

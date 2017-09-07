@@ -182,6 +182,8 @@ public class SupplyDayOrderFragment extends Fragment {
                         mRecyclerView.setAdapter(mAdapter);
                         mSum = getOrdersPriceSum(mPurchaseOrderList);
                         mPriceSum.setText("小计：" + mSum + " ");
+                    }else{
+                        mPriceSum.setText("没有商品被确认！");
                     }
 
                 }
@@ -252,10 +254,12 @@ public class SupplyDayOrderFragment extends Fragment {
      */
     public Float getOrdersPriceSum(List<PurchaseOrder> list) {
         Float sum = 0.0f;
-        for (PurchaseOrder order : list) {
-            sum = sum + order.getActualNum() * order.getPrice();
-        }
-        return (float) (Math.round(sum * 100)) / 100;
+
+            for (PurchaseOrder order : list) {
+                sum = sum + order.getActualNum() * order.getPrice();
+            }
+            return (float) (Math.round(sum * 100)) / 100;
+
     }
 
     /**

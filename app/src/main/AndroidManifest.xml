@@ -127,6 +127,9 @@
             android:name=".AgainCheck.CheckRequestNoteActivity"
             android:parentActivityName=".AgainCheck.AgainCheckMainActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".Other.OtherMainActivity"/>
+        <activity android:name=".Other.ProviderListActivity"/>
+        <activity android:name=".Other.ProviderOrderActivity"/>
 
         <!-- BmobPush 推送服务 start -->
         <service

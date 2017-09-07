@@ -11,6 +11,7 @@ import com.hbsx.purordermanage.Comprehensive.RequestPurchaseExamineInputActivity
 import com.hbsx.purordermanage.Examine.ExamineMainActivity;
 import com.hbsx.purordermanage.FirstCheck.EmployeeListActivity;
 import com.hbsx.purordermanage.InputData.InputDataMainActivity;
+import com.hbsx.purordermanage.Other.OtherMainActivity;
 import com.hbsx.purordermanage.Purchase.SendToProviderActivity;
 import com.hbsx.purordermanage.bean.MyBmobInstallation;
 import com.hbsx.purordermanage.bean.Roles;
@@ -127,6 +128,9 @@ public class LoginActivity extends BaseActivity {
                                     break;
                                 case "初核":
                                     EmployeeListActivity.actionStart(LoginActivity.this);
+                                    break;
+                                case "其他":
+                                    OtherMainActivity.actionStart(LoginActivity.this);
                                     break;
                             }
                             LoginActivity.this.finish();

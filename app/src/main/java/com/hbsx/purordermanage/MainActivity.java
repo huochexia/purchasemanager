@@ -12,6 +12,7 @@ import com.hbsx.purordermanage.Comprehensive.RequestPurchaseExamineInputActivity
 import com.hbsx.purordermanage.Examine.ExamineMainActivity;
 import com.hbsx.purordermanage.FirstCheck.EmployeeListActivity;
 import com.hbsx.purordermanage.InputData.InputDataMainActivity;
+import com.hbsx.purordermanage.Other.OtherMainActivity;
 import com.hbsx.purordermanage.Purchase.SendToProviderActivity;
 import com.hbsx.purordermanage.bean.Roles;
 import com.hbsx.purordermanage.bean.User;
@@ -102,6 +103,9 @@ public class MainActivity extends BaseActivity {
                                     break;
                                 case "初核":
                                     EmployeeListActivity.actionStart(MainActivity.this);
+                                    break;
+                                case "其他":
+                                    OtherMainActivity.actionStart(MainActivity.this);
                                     break;
                             }
                             MainActivity.this.finish(); // 结束启动动画界面

@@ -1,4 +1,4 @@
-package com.hbsx.purordermanage.Examine.Adapter;
+package com.hbsx.purordermanage.Other.Adapter;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -15,7 +15,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hbsx.purordermanage.POManageApplication;
 import com.hbsx.purordermanage.R;
 import com.hbsx.purordermanage.bean.PurchaseOrder;
 import com.hbsx.purordermanage.utils.onMoveAndSwipedListener;
@@ -87,14 +86,7 @@ public class ProviderOrderAdapter extends RecyclerView.Adapter<ProviderOrderAdap
         //实数
         holder.mActualNumLayout.setVisibility(View.VISIBLE);
         holder.mActualNum.setText(purchaseOrder.getActualNum().toString());
-
-        if (purchaseOrder.getOrderState() >= 2) {//已经验收过或已确认或已录入
-            holder.mActualNum.setEnabled(false);
-            holder.mActualNum.setBackground(null);
-        } else {
-            holder.mActualNum.setEnabled(true);
-        }
-
+        holder.mActualNum.setEnabled(true);
         holder.mActualNum.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -104,16 +96,11 @@ public class ProviderOrderAdapter extends RecyclerView.Adapter<ProviderOrderAdap
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 PurchaseOrder order = (PurchaseOrder) holder.mActualNum.getTag();
-                Float purchaseNum = order.getPurchaseNum();
                 if (TextUtils.isEmpty(s)) {
                     holder.mActualNum.setText("0.0");
                 } else {
                     //为了防止因滑动将EditText中内容还原为初始值，将改变存入该item中
                     order.setActualNum(Float.parseFloat(s + ""));
-                     //比较订量与实数
-                    //实际数量不能大于订量的5%
-//                    boolean less = (order.getActualNum() - purchaseNum) > (purchaseNum * 0.05) ? true : false;
-//                    if (!less) {
                         // 存入数据库
                         final String id = order.getObjectId();
                         order.update(id, new UpdateListener() {
@@ -122,10 +109,7 @@ public class ProviderOrderAdapter extends RecyclerView.Adapter<ProviderOrderAdap
 
                             }
                         });
-//                    } else {
-//                        Toast.makeText(POManageApplication.getContext(), "实际数量比订单多,请调整送货量！", Toast.LENGTH_SHORT).show();
-//                        holder.mActualNum.setText("0.0");
-//                    }
+
                 }
 
             }
@@ -160,7 +144,7 @@ public class ProviderOrderAdapter extends RecyclerView.Adapter<ProviderOrderAdap
         if (mPurchaseOrders.get(position).getOrderState() == 3) {//只有为验货状态时才可以重新验货，尚未录入
             PurchaseOrder c = mPurchaseOrders.get(position);
             String id = c.getObjectId();
-//            c.setActualNum(0.0f);
+
             c.setOrderState(1);
             c.update(id, new UpdateListener() {
                 @Override
@@ -173,7 +157,7 @@ public class ProviderOrderAdapter extends RecyclerView.Adapter<ProviderOrderAdap
             mPurchaseOrders.remove(position);
             notifyItemRemoved(position);
         } else {
-            Toast.makeText(mContext, "该项已录入，不能删除！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "该项录入，不能删除！", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -184,7 +168,7 @@ public class ProviderOrderAdapter extends RecyclerView.Adapter<ProviderOrderAdap
         LinearLayout mContentLayout;
         TextView mSerialNumber,mName, mUnit;
         RelativeLayout mActualNumLayout, mPriceLayout;
-        EditText mActualNum,  mPrice;
+        EditText mActualNum, mPurchaseNum, mPrice;
 
         public ViewHolder(View itemView) {
             super(itemView);
