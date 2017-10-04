@@ -40,8 +40,8 @@ import cn.bmob.v3.listener.QueryListListener;
 public class ProviderOrderFragment extends Fragment {
     public static final String ORDER_STATE = "state";
     public static final String ORDER_DATE = "date";
-    private Button mCommitActualNum;
-    private TextView itemNumber;
+    private Button mJisuanButton;
+    private TextView itemSum;
 
     private RelativeLayout mPriceLayout, mActualNumLayout, mPurchaseNumLayout;
 
@@ -71,9 +71,10 @@ public class ProviderOrderFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_examine_actual_num, container, false);
+        View view = inflater.inflate(R.layout.fragment_other_actual_num, container, false);
         initView(view);
         getPurchaseOrderList(mOrderState);
+
         return view;
     }
 
@@ -81,9 +82,15 @@ public class ProviderOrderFragment extends Fragment {
      * 初始化视图
      */
     private void initView(View view) {
-        mCommitActualNum = (Button) view.findViewById(R.id.ok_actual_number_btn);
-        mCommitActualNum.setVisibility(View.GONE);
-        itemNumber = (TextView) view.findViewById(R.id.item_number);
+        mJisuanButton = (Button) view.findViewById(R.id.jisuan_btn);
+        mJisuanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                itemSum.setText(getOrdersPriceSum(mPurchaseOrderList)+"");
+            }
+        });
+        itemSum = (TextView) view.findViewById(R.id.item_total);
+
         mActualNumLayout = (RelativeLayout) view.findViewById(R.id.commodity_item_header_actualnum);
         mActualNumLayout.setVisibility(View.VISIBLE);
 
@@ -184,7 +191,18 @@ public class ProviderOrderFragment extends Fragment {
             }
         }
     };
+    /**
+     * 计算订单金额小计
+     */
+    public Float getOrdersPriceSum(List<PurchaseOrder> list) {
+        Float sum = 0.0f;
 
+        for (PurchaseOrder order : list) {
+            sum = sum + order.getActualNum() * order.getPrice();
+        }
+        return (float) (Math.round(sum * 100)) / 100;
+
+    }
 
     /**
      * 构造一个Fragment,同时传入相应值
