@@ -48,7 +48,7 @@ public class RequestPurchaseExamineInputActivity extends BaseActivity
     }
 
     private void initView() {
-        mCheckCard = (CardView) findViewById(R.id.check_card_view);
+        mCheckCard = (CardView) findViewById(R.id.cw_check);
         mCheckCard.setVisibility(View.GONE);
         mRequestNote = (ImageButton) findViewById(R.id.compre_request_note);
         mSendTo = (ImageButton) findViewById(R.id.compre_purchase_order);

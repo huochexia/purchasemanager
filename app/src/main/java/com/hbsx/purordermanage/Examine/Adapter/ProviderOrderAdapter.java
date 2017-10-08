@@ -119,11 +119,13 @@ public class ProviderOrderAdapter extends RecyclerView.Adapter<ProviderOrderAdap
                         order.update(id, new UpdateListener() {
                             @Override
                             public void done(BmobException e) {
-
+                                if (e != null) {
+                                    Toast.makeText(mContext,"保存失败，请重新输入！",Toast.LENGTH_LONG).show();
+                                }
                             }
                         });
 //                    } else {
-//                        Toast.makeText(POManageApplication.getContext(), "实际数量比订单多,请调整送货量！", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(mContext, "实际数量比订单多,请调整送货量！", Toast.LENGTH_SHORT).show();
 //                        holder.mActualNum.setText("0.0");
 //                    }
                 }
@@ -165,9 +167,7 @@ public class ProviderOrderAdapter extends RecyclerView.Adapter<ProviderOrderAdap
             c.update(id, new UpdateListener() {
                 @Override
                 public void done(BmobException e) {
-                    if (e == null) {
 
-                    }
                 }
             });
             mPurchaseOrders.remove(position);
