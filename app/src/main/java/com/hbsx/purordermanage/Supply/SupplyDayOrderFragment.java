@@ -5,10 +5,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -86,37 +89,41 @@ public class SupplyDayOrderFragment extends Fragment {
         mPriceLayout.setVisibility(View.VISIBLE);
         mPriceSum = (TextView) view.findViewById(R.id.supply_price_sum1);
         mCommitPrice = (Button) view.findViewById(R.id.supply_commit_price_btn1);
-//        mCommitPrice.setEnabled(Utility.compareTime(" 10:30:00"));//大于当天10点半后，不允许确认。
         mCommitPrice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mOrderState == 2) {
                     List<BmobObject> objects = new ArrayList<>();
                     for (PurchaseOrder order : mPurchaseOrderList) {
-                        order.setOrderState(3);//修改订单状态为3，表示已确认
                         objects.add(order);
                     }
                     new BmobBatch().updateBatch(objects).doBatch(new QueryListListener<BatchResult>() {
                         @Override
                         public void done(List<BatchResult> list, BmobException e) {
-
+                            Toast toast = Toast.makeText(getContext(), null, Toast.LENGTH_LONG);// 显示时间也可以是数字
+                            toast.setGravity(Gravity.CENTER, 0, 0);// 最上方显示
+                            LinearLayout toastLayout = (LinearLayout) toast.getView();
+                            ImageView imageView = new ImageView(getContext());
+                            if (e != null) {
+                                toast.setText("提交失败");
+                                imageView.setImageResource(R.drawable.error);
+                                toastLayout.addView(imageView, 0);// 0 图片在文字的上方 ， 1 图片在文字的下方
+                                toast.show();
+                            } else {
+                                toast.setText("提交成功");
+                                imageView.setImageResource(R.drawable.sucess);
+                                toastLayout.addView(imageView, 0);// 0 图片在文字的上方 ， 1 图片在文字的下方
+                                toast.show();
+                            }
                         }
                     });
-                    //因为通过BQL基本语句查询得到的结果是一个不可修改列表，所以不能使用removeAll等方法
-                    //进行列表清空处理，这里重新创建了一个空列表，用于取代原查询结果列表，达到清屏的目的。
-                    List<PurchaseOrder> list = new ArrayList<>();
-                    mAdapter = new SupplyPriceDetailAdapter(list, mOrderState);
-                    mRecyclerView.setAdapter(mAdapter);
                 }
-
-            }
         });
         switch (mOrderState) {
             case 1:
                 RelativeLayout purchaseNumLayout = (RelativeLayout) view.findViewById(R.id.commodity_item_header_dingliang);
                 purchaseNumLayout.setVisibility(View.VISIBLE);
                 mPriceSum.setVisibility(View.GONE);
-                mCommitPrice.setVisibility(View.GONE);
+                mCommitPrice.setVisibility(View.VISIBLE);
                 break;
             case 2:
                 RelativeLayout actulNumLayout = (RelativeLayout) view.findViewById(R.id.commodity_item_header_actualnum);

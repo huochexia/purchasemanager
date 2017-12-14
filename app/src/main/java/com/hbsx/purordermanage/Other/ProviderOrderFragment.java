@@ -8,12 +8,16 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hbsx.purordermanage.Other.Adapter.ProviderOrderAdapter;
 import com.hbsx.purordermanage.R;
@@ -40,7 +44,7 @@ import cn.bmob.v3.listener.QueryListListener;
 public class ProviderOrderFragment extends Fragment {
     public static final String ORDER_STATE = "state";
     public static final String ORDER_DATE = "date";
-    private Button mJisuanButton;
+    private Button mJisuanButton,mSaveButton;
     private TextView itemSum;
 
     private RelativeLayout mPriceLayout, mActualNumLayout, mPurchaseNumLayout;
@@ -90,6 +94,37 @@ public class ProviderOrderFragment extends Fragment {
             }
         });
         itemSum = (TextView) view.findViewById(R.id.item_total);
+
+        mSaveButton = (Button) view.findViewById(R.id.save_btn);
+        mSaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new BmobBatch().updateBatch(BeanToBmobObject(mPurchaseOrderList))
+                        .doBatch(new QueryListListener<BatchResult>() {
+                    @Override
+                    public void done(List<BatchResult> list, BmobException e) {
+                            Toast toast = Toast.makeText(getContext(), null, Toast.LENGTH_LONG);// 显示时间也可以是数字
+                            toast.setGravity(Gravity.CENTER, 0, 0);// 最上方显示
+                            LinearLayout toastLayout = (LinearLayout) toast.getView();
+                            ImageView imageView = new ImageView(getContext());
+                        if (e != null) {
+                            toast.setText("提交失败");
+                            imageView.setImageResource(R.drawable.error);
+                            toastLayout.addView(imageView, 0);// 0 图片在文字的上方 ， 1 图片在文字的下方
+                            toast.show();
+                        } else {
+                            toast.setText("提交成功");
+                            imageView.setImageResource(R.drawable.sucess);
+                            toastLayout.addView(imageView, 0);// 0 图片在文字的上方 ， 1 图片在文字的下方
+                            toast.show();
+                        }
+
+
+                    }
+                });
+
+            }
+        });
 
         mActualNumLayout = (RelativeLayout) view.findViewById(R.id.commodity_item_header_actualnum);
         mActualNumLayout.setVisibility(View.VISIBLE);
@@ -220,5 +255,13 @@ public class ProviderOrderFragment extends Fragment {
         return fragment;
     }
 
+    public List<BmobObject> BeanToBmobObject(List<PurchaseOrder> orders) {
+        List<BmobObject> bmobObjects = new ArrayList<>();
+        for (PurchaseOrder order : orders) {
+            BmobObject object = (BmobObject)order;
+            bmobObjects.add(object);
+        }
+        return  bmobObjects;
+    }
 
 }

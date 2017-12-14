@@ -5,16 +5,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 
-import com.hbsx.purordermanage.BaseActivity;
+import com.hbsx.purordermanage.ActivityCollector;
+import com.hbsx.purordermanage.RepairPassWordActivity;
+import com.hbsx.purordermanage.base.BaseActivity;
 import com.hbsx.purordermanage.Examine.ExamineMainActivity;
 import com.hbsx.purordermanage.InputData.InputDataMainActivity;
-import com.hbsx.purordermanage.Purchase.PurchaseMainActivity;
 import com.hbsx.purordermanage.Purchase.SendToProviderActivity;
 import com.hbsx.purordermanage.R;
 import com.hbsx.purordermanage.Request.RequestNoteMainActivity;
+
+import cn.bmob.v3.BmobUser;
 
 /**
  * 组合活动，适用于综合岗，包括订货、购买、验货及录入功能
@@ -73,6 +78,26 @@ public class RequestPurchaseExamineInputActivity extends BaseActivity
                 break;
         }
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.repair_password,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.repair_password_btn:
+                startActivity(RepairPassWordActivity.class,null,false);
+                break;
+            case R.id.logout_btn:
+                BmobUser.logOut();
+                ActivityCollector.finishAll();
+                break;
+        }
+        return true;
     }
 
     /**

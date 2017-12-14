@@ -10,7 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 
-import com.hbsx.purordermanage.BaseActivity;
+import com.hbsx.purordermanage.base.BaseActivity;
 import com.hbsx.purordermanage.R;
 
 /**
@@ -77,7 +77,7 @@ public class PurchaseMainActivity extends BaseActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){
             if((System.currentTimeMillis()-exitTime) > 3000){
-                toast("再按一次退出程序！");
+                toast("再按一次退出程序！",true);
                 exitTime = System.currentTimeMillis();
             } else {
                 finish();

@@ -21,6 +21,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="查看订单或计算金额"
+                android:background="@drawable/round_button"
                 android:text="日历功能转换" />
         </LinearLayout>
         <LinearLayout

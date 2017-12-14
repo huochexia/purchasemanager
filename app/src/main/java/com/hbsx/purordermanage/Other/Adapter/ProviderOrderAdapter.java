@@ -101,14 +101,14 @@ public class ProviderOrderAdapter extends RecyclerView.Adapter<ProviderOrderAdap
                 } else {
                     //为了防止因滑动将EditText中内容还原为初始值，将改变存入该item中
                     order.setActualNum(Float.parseFloat(s + ""));
-                        // 存入数据库
-                        final String id = order.getObjectId();
-                        order.update(id, new UpdateListener() {
-                            @Override
-                            public void done(BmobException e) {
-
-                            }
-                        });
+//                        // 存入数据库
+//                        final String id = order.getObjectId();
+//                        order.update(id, new UpdateListener() {
+//                            @Override
+//                            public void done(BmobException e) {
+//
+//                            }
+//                        });
 
                 }
 

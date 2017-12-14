@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.hbsx.purordermanage.BaseActivity;
+import com.hbsx.purordermanage.base.BaseActivity;
 import com.hbsx.purordermanage.AgainCheck.adapter.CheckRequestNoteDetailAdapter;
 import com.hbsx.purordermanage.R;
 import com.hbsx.purordermanage.bean.PurchaseOrder;

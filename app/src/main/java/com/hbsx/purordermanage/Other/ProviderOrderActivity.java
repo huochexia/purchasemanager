@@ -8,7 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.hbsx.purordermanage.BaseActivity;
+import com.hbsx.purordermanage.base.BaseActivity;
 import com.hbsx.purordermanage.R;
 import com.hbsx.purordermanage.utils.MyViewPagerAdapter;
 

@@ -9,13 +9,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
-import com.hbsx.purordermanage.BaseActivity;
+import com.hbsx.purordermanage.base.BaseActivity;
 import com.hbsx.purordermanage.R;
 import com.hbsx.purordermanage.Request.adapter.ShoppingCartListAdapter;
 import com.hbsx.purordermanage.bean.Commodity;
@@ -79,25 +82,14 @@ public class ShoppingCartActivity extends BaseActivity  {
         //显示商品列表上表头的订量
         mPurchaseNumLayout = (RelativeLayout) findViewById(R.id.commodity_item_header_dingliang);
         mPurchaseNumLayout.setVisibility(View.VISIBLE);
-
         mCommodityList = new ArrayList<>();
         orders = new ArrayList<>();
-
-
-
         mCommodityView = (RecyclerView) findViewById(R.id.commodity_detail_list);
         LinearLayoutManager lm = new LinearLayoutManager(this);
         mCommodityView.setLayoutManager(lm);
+        getCommodityList();
 
-        //从购物车中获取物品数据，并转换成临时商品对象,因为向云端数据库存储时需要是BmobObject对象
-        List<ShoppingCart> goods = DataSupport.findAll(ShoppingCart.class, true);
-        if (goods.size() > 0) {
 
-            for (ShoppingCart good : goods) {
-                Commodity commodity = RequestNoteMainActivity.getCommodity(good);
-                mCommodityList.add(commodity);
-            }
-        }
         mAdapter = new ShoppingCartListAdapter(mCommodityList);
         mCommodityView.setAdapter(mAdapter);
         toolbar.setSubtitle("共"+mCommodityList.size()+"项商品");
@@ -106,6 +98,22 @@ public class ShoppingCartActivity extends BaseActivity  {
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mAdapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(mCommodityView);
+
+    }
+    /**
+     * 从购物车中获取物品数据，并转换成临时商品对象,因为向云端数据库存储时需要是BmobObject对象
+     *
+     */
+    private void getCommodityList() {
+
+         List<ShoppingCart> goods = DataSupport.findAll(ShoppingCart.class, true);
+        if (goods.size() > 0) {
+
+            for (ShoppingCart good : goods) {
+                Commodity commodity = RequestNoteMainActivity.getCommodity(good);
+                mCommodityList.add(commodity);
+            }
+        }
 
     }
 
@@ -130,17 +138,19 @@ public class ShoppingCartActivity extends BaseActivity  {
      * @param list
      */
     private void saveRequestNote(List<BmobObject> list) {
+
         new BmobBatch().insertBatch(list).doBatch(new QueryListListener<BatchResult>() {
             @Override
             public void done(List<BatchResult> list, BmobException e) {
                 if (e == null) {
                     //提交成功后，要清空购物车，返回主界面
                     DataSupport.deleteAll(ShoppingCart.class,"purchaseNum <> ?","0.0");
-                    toast("提交成功!");
-
-                    finish();
+                    toast("提交成功",true);
+                    mCommodityList.clear();
+                    getCommodityList();
+                    mAdapter.notifyDataSetChanged();
                 } else {
-                    toast("提交失败：" + e.getMessage() + "," + e.getErrorCode());
+                    toast("提交失败",false);
                 }
             }
         });

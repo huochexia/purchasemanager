@@ -12,7 +12,7 @@ import com.hbsx.purordermanage.Examine.ExamineMainActivity;
 import com.hbsx.purordermanage.FirstCheck.EmployeeListActivity;
 import com.hbsx.purordermanage.InputData.InputDataMainActivity;
 import com.hbsx.purordermanage.Other.OtherMainActivity;
-import com.hbsx.purordermanage.Purchase.SendToProviderActivity;
+import com.hbsx.purordermanage.base.BaseActivity;
 import com.hbsx.purordermanage.bean.MyBmobInstallation;
 import com.hbsx.purordermanage.bean.Roles;
 import com.hbsx.purordermanage.bean.User;
@@ -137,7 +137,7 @@ public class LoginActivity extends BaseActivity {
                         }
                     });
                 } else {
-                    toast("错误码：" + e.getErrorCode() + ",错误原因：" + e.getLocalizedMessage());
+                    toast("错误码：" + e.getErrorCode() + ",错误原因：" + e.getLocalizedMessage(),false);
                     mPWEdit.setText("");
                 }
             }

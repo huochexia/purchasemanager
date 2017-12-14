@@ -10,7 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.hbsx.purordermanage.BaseActivity;
+import com.hbsx.purordermanage.base.BaseActivity;
 import com.hbsx.purordermanage.R;
 import com.hbsx.purordermanage.Request.adapter.RequestNoteSearchAdapter;
 import com.hbsx.purordermanage.bean.RequestNote;
@@ -133,7 +133,7 @@ public class RequestNoteNumSearchActivity extends BaseActivity {
                         }
                     }).start();
                 } else {
-                    toast("查询失败：" + e.getMessage());
+                    toast("查询失败：" + e.getMessage(),false);
                 }
             }
         });

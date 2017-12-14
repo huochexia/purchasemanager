@@ -10,7 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.hbsx.purordermanage.BaseActivity;
+import com.hbsx.purordermanage.base.BaseActivity;
 import com.hbsx.purordermanage.R;
 import com.hbsx.purordermanage.Request.adapter.RequestNoteDetailAdapter;
 import com.hbsx.purordermanage.bean.RequestNote;
@@ -99,7 +99,7 @@ public class RequestNoteDetailActivity extends BaseActivity {
                     }
 
                 }else{
-                    toast("查询失败"+e.getMessage());
+                    toast("查询失败"+e.getMessage(),false);
                 }
             }
         });

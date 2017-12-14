@@ -7,6 +7,8 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.GestureDetector;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,13 +18,17 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.TextView;
 
-import com.hbsx.purordermanage.BaseActivity;
+import com.hbsx.purordermanage.ActivityCollector;
+import com.hbsx.purordermanage.RepairPassWordActivity;
+import com.hbsx.purordermanage.base.BaseActivity;
 import com.hbsx.purordermanage.R;
 import com.hbsx.purordermanage.utils.calendar.CalendarAdapter;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import cn.bmob.v3.BmobUser;
 
 /**
  * 验货功能应用主程序，日历显示activity，点击日期进入供货商选择界面
@@ -253,9 +259,23 @@ public class OtherMainActivity extends BaseActivity {
         mContext.startActivity(intent);
     }
 
-    /**
-     * 实现再按一次返回键退出程序
-     */
-    private long exitTime = 0;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.repair_password,menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.repair_password_btn:
+                startActivity(RepairPassWordActivity.class,null,false);
+                break;
+            case R.id.logout_btn:
+                BmobUser.logOut();
+                ActivityCollector.finishAll();
+                break;
+        }
+        return true;
+    }
 }

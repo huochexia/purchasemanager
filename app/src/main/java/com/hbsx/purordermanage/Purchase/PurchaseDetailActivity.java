@@ -12,11 +12,10 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.hbsx.purordermanage.BaseActivity;
+import com.hbsx.purordermanage.base.BaseActivity;
 import com.hbsx.purordermanage.Purchase.adapter.PurchaseDetailAdapter;
 import com.hbsx.purordermanage.R;
 import com.hbsx.purordermanage.bean.PurchaseOrder;
-import com.hbsx.purordermanage.bean.User;
 import com.hbsx.purordermanage.utils.SimpleItemTouchHelperCallback;
 import com.hbsx.purordermanage.utils.Utility;
 
@@ -147,7 +146,7 @@ public class PurchaseDetailActivity extends BaseActivity {
                         }
                     }).start();
                 } else {
-                    toast("查询失败：" + e.getMessage());
+                    toast("查询失败：" + e.getMessage(),false);
                 }
             }
         });
@@ -165,7 +164,7 @@ public class PurchaseDetailActivity extends BaseActivity {
                 case PURCHASEORDER_LIST:
                     purchaseOrderList = (List<PurchaseOrder>) msg.getData().getSerializable("purchaseorderlist");
                     if (purchaseOrderList.size() <= 0) {
-                        toast("此供货商无订单！");
+                        toast("此供货商无订单！",false);
                     } else {
                         mAdapter = new PurchaseDetailAdapter(purchaseOrderList);
                         mRecyclerView.setAdapter(mAdapter);

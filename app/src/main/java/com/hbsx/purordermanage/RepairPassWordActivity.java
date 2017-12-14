@@ -1,6 +1,5 @@
 package com.hbsx.purordermanage;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -10,8 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 
+import com.hbsx.purordermanage.base.BaseActivity;
 import com.hbsx.purordermanage.bean.User;
 
 import java.util.List;
@@ -37,28 +36,27 @@ public class RepairPassWordActivity extends BaseActivity implements View.OnClick
         mToolBar = (Toolbar) findViewById(R.id.toolbar);
         mToolBar.setTitle("修改你的密码");
         setSupportActionBar(mToolBar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         initView();
         initEvent();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.logout_menu,menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.logout_btn:
-                BmobUser.logOut();   //清除缓存用户对象
-//                BmobUser currentUser = BmobUser.getCurrentUser(); // 现在的currentUser是null了
-                ActivityCollector.finishAll();
-                break;
-        }
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.logout_menu,menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()){
+//            case R.id.logout_btn:
+//               finish();
+//                break;
+//        }
+//        return true;
+//    }
 
     private void initEvent() {
         mConfirmBtn.setOnClickListener(this);
@@ -129,11 +127,11 @@ public class RepairPassWordActivity extends BaseActivity implements View.OnClick
                     if (object.size() == 1) {
                         updateCurrentUserPwd(oldPw, newPw);
                     } else {
-                        toast("旧密码不对！");
+                        toast("旧密码不对！",false);
                     }
 
                 } else {
-                    toast("错误码：" + e.getErrorCode() + ",错误原因：" + e.getLocalizedMessage());
+                    toast("错误码：" + e.getErrorCode() + ",错误原因：" + e.getLocalizedMessage(),false);
                 }
             }
 
@@ -154,7 +152,8 @@ public class RepairPassWordActivity extends BaseActivity implements View.OnClick
                 if (e == null) {
                     //密码修改成功后，注销当前用户
                     BmobUser.logOut();
-                    toast("密码修改成功，可以用新密码进行登录");
+                    toast("密码修改成功，可以用新密码进行登录",true);
+                    finish();
                 } else {
 
                 }

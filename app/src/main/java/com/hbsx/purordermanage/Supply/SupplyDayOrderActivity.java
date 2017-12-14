@@ -3,28 +3,14 @@ package com.hbsx.purordermanage.Supply;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.hbsx.purordermanage.BaseActivity;
+import com.hbsx.purordermanage.base.BaseActivity;
 import com.hbsx.purordermanage.R;
-import com.hbsx.purordermanage.Supply.adapter.SupplyPriceDetailAdapter;
-import com.hbsx.purordermanage.bean.PurchaseOrder;
-import com.hbsx.purordermanage.bean.User;
 import com.hbsx.purordermanage.utils.MyViewPagerAdapter;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
 
 /**
  * 每日订单详情，每日订单有两种，一种是验货单，一种是订货单

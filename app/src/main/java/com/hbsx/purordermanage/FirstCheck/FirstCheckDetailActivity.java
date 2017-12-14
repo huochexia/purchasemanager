@@ -15,7 +15,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.hbsx.purordermanage.BaseActivity;
+import com.hbsx.purordermanage.base.BaseActivity;
 import com.hbsx.purordermanage.FirstCheck.Adapter.FirstCheckDetailAdapter;
 import com.hbsx.purordermanage.R;
 import com.hbsx.purordermanage.bean.RequestNote;
@@ -170,7 +170,7 @@ public class FirstCheckDetailActivity extends BaseActivity {
                         }
                     }).start();
                 } else {
-                    toast("查询失败：" + e.getMessage());
+                    toast("查询失败：" + e.getMessage(),false);
                 }
             }
         });

@@ -11,8 +11,9 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.hbsx.purordermanage.BaseActivity;
-import com.hbsx.purordermanage.Manager.adapter.CommoCateAdapter;
+import com.hbsx.purordermanage.ActivityCollector;
+import com.hbsx.purordermanage.RepairPassWordActivity;
+import com.hbsx.purordermanage.base.BaseActivity;
 import com.hbsx.purordermanage.R;
 
 import cn.bmob.v3.BmobUser;
@@ -77,16 +78,10 @@ public class ManagerActivity extends BaseActivity {
                 mt.replace(R.id.manager_fragment_container, useFg);
                 mt.commit();
                 break;
-            case R.id.commodiyt_set:
-                Bundle bundle = new Bundle();
-                bundle.putInt("flag", CommoCateAdapter.COMMODITY_MANAGER);
-                setToolbarTitle("商品管理");
-                CommodityCategoryFragment ccFm = new CommodityCategoryFragment();
-                ccFm.setArguments(bundle);
-                FragmentManager mFManager = getSupportFragmentManager();
-                FragmentTransaction mFTransaction = mFManager.beginTransaction();
-                mFTransaction.replace(R.id.manager_fragment_container, ccFm);
-                mFTransaction.commit();
+            case R.id.commodity_category:
+
+                break;
+            case R.id.commodity_unit:
                 break;
             case R.id.return_main:
                 ManagerMainFragment mmf = new ManagerMainFragment();
@@ -107,17 +102,19 @@ public class ManagerActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.logout_menu, menu);
+        getMenuInflater().inflate(R.menu.repair_password, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.repair_password_btn:
+                startActivity(RepairPassWordActivity.class,null,false);
+                break;
             case R.id.logout_btn:
-                BmobUser.logOut();   //清除缓存用户对象
-//                BmobUser currentUser = BmobUser.getCurrentUser(); // 现在的currentUser是null了
-                this.finish();
+                BmobUser.logOut();
+                ActivityCollector.finishAll();
                 break;
         }
         return true;
@@ -132,7 +129,7 @@ public class ManagerActivity extends BaseActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
             if ((System.currentTimeMillis() - exitTime) > 3000) {
-                toast("再按一次退出程序！");
+                toast("再按一次退出程序！",true);
                 exitTime = System.currentTimeMillis();
             } else {
                 finish();

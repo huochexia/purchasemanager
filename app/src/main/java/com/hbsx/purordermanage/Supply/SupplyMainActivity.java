@@ -10,6 +10,8 @@ import android.os.Message;
 import android.support.v7.widget.Toolbar;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,7 +23,9 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.hbsx.purordermanage.BaseActivity;
+import com.hbsx.purordermanage.ActivityCollector;
+import com.hbsx.purordermanage.RepairPassWordActivity;
+import com.hbsx.purordermanage.base.BaseActivity;
 import com.hbsx.purordermanage.R;
 import com.hbsx.purordermanage.bean.PurchaseOrder;
 import com.hbsx.purordermanage.bean.User;
@@ -38,10 +42,8 @@ import java.util.Locale;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobDate;
-import cn.bmob.v3.datatype.BmobQueryResult;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.SQLQueryListener;
 
 /**
  * 供货商应用主程序，日历显示activity
@@ -92,6 +94,26 @@ public class SupplyMainActivity extends BaseActivity {
         initView();
 //        initCalendar();
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.repair_password,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.repair_password_btn:
+                startActivity(RepairPassWordActivity.class,null,false);
+                break;
+            case R.id.logout_btn:
+                BmobUser.logOut();
+                ActivityCollector.finishAll();
+                break;
+        }
+        return true;
     }
 
     @Override
@@ -438,7 +460,7 @@ public class SupplyMainActivity extends BaseActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
             if ((System.currentTimeMillis() - exitTime) > 3000) {
-                toast("再按一次退出程序！");
+                toast("再按一次退出程序！",true);
                 exitTime = System.currentTimeMillis();
             } else {
                 finish();

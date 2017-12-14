@@ -8,12 +8,16 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hbsx.purordermanage.Examine.Adapter.ProviderOrderAdapter;
 import com.hbsx.purordermanage.R;
@@ -122,8 +126,20 @@ public class ProviderOrderFragment extends Fragment {
         new BmobBatch().updateBatch(objects).doBatch(new QueryListListener<BatchResult>() {
             @Override
             public void done(List<BatchResult> list, BmobException e) {
-                if (e == null) {
-
+                Toast toast = Toast.makeText(getContext(), null, Toast.LENGTH_LONG);// 显示时间也可以是数字
+                toast.setGravity(Gravity.CENTER, 0, 0);// 最上方显示
+                LinearLayout toastLayout = (LinearLayout) toast.getView();
+                ImageView imageView = new ImageView(getContext());
+                if (e != null) {
+                    toast.setText("提交失败");
+                    imageView.setImageResource(R.drawable.error);
+                    toastLayout.addView(imageView, 0);// 0 图片在文字的上方 ， 1 图片在文字的下方
+                    toast.show();
+                } else {
+                    toast.setText("提交成功");
+                    imageView.setImageResource(R.drawable.sucess);
+                    toastLayout.addView(imageView, 0);// 0 图片在文字的上方 ， 1 图片在文字的下方
+                    toast.show();
                 }
             }
         });

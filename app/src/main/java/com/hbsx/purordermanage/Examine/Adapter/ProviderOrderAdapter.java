@@ -114,16 +114,16 @@ public class ProviderOrderAdapter extends RecyclerView.Adapter<ProviderOrderAdap
                     //实际数量不能大于订量的5%
 //                    boolean less = (order.getActualNum() - purchaseNum) > (purchaseNum * 0.05) ? true : false;
 //                    if (!less) {
-                        // 存入数据库
-                        final String id = order.getObjectId();
-                        order.update(id, new UpdateListener() {
-                            @Override
-                            public void done(BmobException e) {
-                                if (e != null) {
-                                    Toast.makeText(mContext,"保存失败，请重新输入！",Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
+//                        // 存入数据库
+//                        final String id = order.getObjectId();
+//                        order.update(id, new UpdateListener() {
+//                            @Override
+//                            public void done(BmobException e) {
+//                                if (e != null) {
+//                                    Toast.makeText(mContext,"保存失败，请重新输入！",Toast.LENGTH_LONG).show();
+//                                }
+//                            }
+//                        });
 //                    } else {
 //                        Toast.makeText(mContext, "实际数量比订单多,请调整送货量！", Toast.LENGTH_SHORT).show();
 //                        holder.mActualNum.setText("0.0");
