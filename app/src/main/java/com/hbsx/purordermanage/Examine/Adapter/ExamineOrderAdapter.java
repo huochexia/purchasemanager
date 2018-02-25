@@ -1,4 +1,4 @@
-package com.hbsx.purordermanage.Other.Adapter;
+package com.hbsx.purordermanage.Examine.Adapter;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -29,7 +29,7 @@ import cn.bmob.v3.listener.UpdateListener;
  * Created by Administrator on 2017/1/14 0014.
  */
 
-public class ProviderOrderAdapter extends RecyclerView.Adapter<ProviderOrderAdapter.ViewHolder>
+public class ExamineOrderAdapter extends RecyclerView.Adapter<ExamineOrderAdapter.ViewHolder>
         implements onMoveAndSwipedListener {
 
     private Context mContext;
@@ -40,7 +40,7 @@ public class ProviderOrderAdapter extends RecyclerView.Adapter<ProviderOrderAdap
      * 通过构造方法获取数据源
      */
 
-    public ProviderOrderAdapter(List<PurchaseOrder> list, Integer state) {
+    public ExamineOrderAdapter(List<PurchaseOrder> list, Integer state) {
         this.mPurchaseOrders = list;
         this.mOrderState = state;
 
@@ -86,7 +86,14 @@ public class ProviderOrderAdapter extends RecyclerView.Adapter<ProviderOrderAdap
         //实数
         holder.mActualNumLayout.setVisibility(View.VISIBLE);
         holder.mActualNum.setText(purchaseOrder.getActualNum().toString());
-        holder.mActualNum.setEnabled(true);
+
+        if (purchaseOrder.getOrderState() >= 3) {//已经验收且已确认或已录入
+            holder.mActualNum.setEnabled(false);
+            holder.mActualNum.setBackground(null);
+        } else {
+            holder.mActualNum.setEnabled(true);
+        }
+
         holder.mActualNum.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -96,20 +103,31 @@ public class ProviderOrderAdapter extends RecyclerView.Adapter<ProviderOrderAdap
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 PurchaseOrder order = (PurchaseOrder) holder.mActualNum.getTag();
+                Float purchaseNum = order.getPurchaseNum();
                 if (TextUtils.isEmpty(s)) {
                     holder.mActualNum.setText("0.0");
                 } else {
                     //为了防止因滑动将EditText中内容还原为初始值，将改变存入该item中
-                    order.setActualNum(Float.parseFloat(s + ""));
+                    order.setActualNum(Float.parseFloat(s+""));
+                    order.setActualAgain(Float.parseFloat(s+""));
+                     //比较订量与实数
+                    //实际数量不能大于订量的5%
+//                    boolean less = (order.getActualNum() - purchaseNum) > (purchaseNum * 0.05) ? true : false;
+//                    if (!less) {
 //                        // 存入数据库
 //                        final String id = order.getObjectId();
 //                        order.update(id, new UpdateListener() {
 //                            @Override
 //                            public void done(BmobException e) {
-//
+//                                if (e != null) {
+//                                    Toast.makeText(mContext,"保存失败，请重新输入！",Toast.LENGTH_LONG).show();
+//                                }
 //                            }
 //                        });
-
+//                    } else {
+//                        Toast.makeText(mContext, "实际数量比订单多,请调整送货量！", Toast.LENGTH_SHORT).show();
+//                        holder.mActualNum.setText("0.0");
+//                    }
                 }
 
             }
@@ -144,20 +162,18 @@ public class ProviderOrderAdapter extends RecyclerView.Adapter<ProviderOrderAdap
         if (mPurchaseOrders.get(position).getOrderState() == 3) {//只有为验货状态时才可以重新验货，尚未录入
             PurchaseOrder c = mPurchaseOrders.get(position);
             String id = c.getObjectId();
-
+//            c.setActualNum(0.0f);
             c.setOrderState(1);
             c.update(id, new UpdateListener() {
                 @Override
                 public void done(BmobException e) {
-                    if (e == null) {
 
-                    }
                 }
             });
             mPurchaseOrders.remove(position);
             notifyItemRemoved(position);
         } else {
-            Toast.makeText(mContext, "该项录入，不能删除！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "该项已录入，不能删除！", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -168,7 +184,7 @@ public class ProviderOrderAdapter extends RecyclerView.Adapter<ProviderOrderAdap
         LinearLayout mContentLayout;
         TextView mSerialNumber,mName, mUnit;
         RelativeLayout mActualNumLayout, mPriceLayout;
-        EditText mActualNum, mPurchaseNum, mPrice;
+        EditText mActualNum,  mPrice;
 
         public ViewHolder(View itemView) {
             super(itemView);

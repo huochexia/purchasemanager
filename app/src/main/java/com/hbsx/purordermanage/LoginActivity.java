@@ -76,27 +76,7 @@ public class LoginActivity extends BaseActivity {
                     query.getObject(objectId, new QueryListener<User>() {
                         @Override
                         public void done(final User user, BmobException e) {
-                            /*
-                            如果注册成功，则将设备与用户通过Installation进行绑定
-                             */
-                            BmobQuery<MyBmobInstallation> query = new BmobQuery<>();
-                            query.addWhereEqualTo("installationId", BmobInstallation.getInstallationId(getApplication()));
-                            query.findObjects(new FindListener<MyBmobInstallation>() {
-                                @Override
-                                public void done(List<MyBmobInstallation> list, BmobException e) {
-                                    if(list.size()>0){
-                                        MyBmobInstallation mbi = list.get(0);
-                                        mbi.setUser(user);//绑定用户
-                                        mbi.update(list.get(0).getObjectId(), new UpdateListener() {
-                                            @Override
-                                            public void done(BmobException e) {
-
-                                            }
-                                        });
-                                    }
-                                }
-                            });
-                            Roles role = user.getRole();
+                             Roles role = user.getRole();
                             switch (role.getRoleName()) {
                                 case "管理员":
                                     Intent intent = new Intent(LoginActivity.this, ManagerActivity.class); //从启动动画ui跳转到主ui

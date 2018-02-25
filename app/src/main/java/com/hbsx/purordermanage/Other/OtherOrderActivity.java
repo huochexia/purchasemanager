@@ -16,7 +16,7 @@ import com.hbsx.purordermanage.utils.MyViewPagerAdapter;
  * 每日订单详情，每日订单有两种，一种是未录入单，一种是已录入单
  * Created by Administrator on 2017/2/24 0024.
  */
-public class ProviderOrderActivity extends BaseActivity {
+public class OtherOrderActivity extends BaseActivity {
     private Toolbar  toolbar;
     private String mOrderDate;
     private String provider;
@@ -48,12 +48,12 @@ public class ProviderOrderActivity extends BaseActivity {
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         MyViewPagerAdapter viewPagerAdapter = new MyViewPagerAdapter(getSupportFragmentManager());
 //        viewPagerAdapter.addFragment(ProviderOrderFragment.newInstance(1,mOrderDate,provider),"未验货");
-        viewPagerAdapter.addFragment(ProviderOrderFragment.newInstance(4,mOrderDate,provider),"已录入");
+        viewPagerAdapter.addFragment(OrderFragment.newInstance(3,mOrderDate,provider),"再次验货");
         mViewPager.setAdapter(viewPagerAdapter);
 
         mTabLayout = (TabLayout) findViewById(R.id.supply_day_tab_layout);
 //        mTabLayout.addTab(mTabLayout.newTab().setText("未验货"));
-        mTabLayout.addTab(mTabLayout.newTab().setTag("已录入"));
+        mTabLayout.addTab(mTabLayout.newTab().setTag("再次验货"));
         mTabLayout.setupWithViewPager(mViewPager);
 
     }
@@ -64,7 +64,7 @@ public class ProviderOrderActivity extends BaseActivity {
      * @param orderdate  传入订单日期
      */
     public static void actionStart(Context mContext,String orderdate,String provider){
-        Intent intent = new Intent(mContext,ProviderOrderActivity.class);
+        Intent intent = new Intent(mContext,OtherOrderActivity.class);
         intent.putExtra("orderdate",orderdate);
         intent.putExtra("provider",provider);
         mContext.startActivity(intent);

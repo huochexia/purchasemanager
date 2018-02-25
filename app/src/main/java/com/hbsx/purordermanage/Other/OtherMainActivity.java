@@ -66,7 +66,7 @@ public class OtherMainActivity extends BaseActivity {
         setContentView(R.layout.activity_examine_main);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("修改商品数量");
+        toolbar.setTitle("再次确认验货");
         toolbar.setNavigationIcon(R.mipmap.left_arrow);
         setSupportActionBar(toolbar);
 

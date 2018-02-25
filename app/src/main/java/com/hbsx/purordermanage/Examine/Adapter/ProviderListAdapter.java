@@ -9,8 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.hbsx.purordermanage.Examine.ProviderOrderActivity;
-import com.hbsx.purordermanage.Examine.ProviderOrderFragment;
+import com.hbsx.purordermanage.Examine.ExamineOrderActivity;
 import com.hbsx.purordermanage.R;
 import com.hbsx.purordermanage.bean.PurchaseOrder;
 import com.hbsx.purordermanage.bean.User;
@@ -53,7 +52,7 @@ public class ProviderListAdapter extends RecyclerView.Adapter<ProviderListAdapte
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ProviderOrderActivity.actionStart(mContext,orderDate,provider);
+                ExamineOrderActivity.actionStart(mContext,orderDate,provider);
             }
         });
         //增加角标，显示订货单数量（未验货数量）

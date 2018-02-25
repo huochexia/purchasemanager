@@ -44,13 +44,13 @@ public class SupplyDayOrderActivity extends BaseActivity {
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         MyViewPagerAdapter viewPagerAdapter = new MyViewPagerAdapter(getSupportFragmentManager());
         viewPagerAdapter.addFragment(SupplyDayOrderFragment.newInstance(1,mOrderDate),"订货单");
-//        viewPagerAdapter.addFragment(SupplyDayOrderFragment.newInstance(2,mOrderDate),"验货单");
+        viewPagerAdapter.addFragment(SupplyDayOrderFragment.newInstance(2,mOrderDate),"验货单");
         viewPagerAdapter.addFragment(SupplyDayOrderFragment.newInstance(3,mOrderDate),"确认单");
         mViewPager.setAdapter(viewPagerAdapter);
 
         mTabLayout = (TabLayout) findViewById(R.id.supply_day_tab_layout);
         mTabLayout.addTab(mTabLayout.newTab().setText("订货单"));
-//        mTabLayout.addTab(mTabLayout.newTab().setTag("验货单"));
+        mTabLayout.addTab(mTabLayout.newTab().setTag("验货单"));
         mTabLayout.addTab(mTabLayout.newTab().setTag("确认单"));
         mTabLayout.setupWithViewPager(mViewPager);
 

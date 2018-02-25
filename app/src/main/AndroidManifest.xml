@@ -95,7 +95,7 @@
             android:parentActivityName=".Examine.ExamineMainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Examine.ProviderOrderActivity"
+            android:name=".Examine.ExamineOrderActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".InputData.InputDataMainActivity"
@@ -129,7 +129,7 @@
             android:screenOrientation="portrait" />
         <activity android:name=".Other.OtherMainActivity"/>
         <activity android:name=".Other.ProviderListActivity"/>
-        <activity android:name=".Other.ProviderOrderActivity"/>
+        <activity android:name=".Other.OtherOrderActivity"/>
 
         <!-- BmobPush 推送服务 start -->
         <service

@@ -27,6 +27,8 @@ public class PurchaseOrder extends BmobObject {
     private Float price = 0.0f;
     //商品实际数量
     private Float actualNum = 0.0f;
+    //再次确定数量
+    private Float actualAgain = 0.0f;
     //商品金额
     private Float sum = 0.0f;
 
@@ -42,13 +44,21 @@ public class PurchaseOrder extends BmobObject {
     private User provider;
     //供货商名称
     private String providername;
-    //订单状态 （0：初始订单，1：已分配，2：已验货，3：已录入）
+    //订单状态 （0：初始订单，1：已分配，2：已验货，3：已确认，4：已录入）
     private Integer orderState;
     //录入状态(0:尚未录入，1：已经录入）
     private Integer inputState;
     /*
        Getter和Setter
      */
+
+    public Float getActualAgain() {
+        return actualAgain;
+    }
+
+    public void setActualAgain(Float actualAgain) {
+        this.actualAgain = actualAgain;
+    }
 
     public String getProvidername() {
         return providername;

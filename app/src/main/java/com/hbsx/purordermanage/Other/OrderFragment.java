@@ -1,4 +1,4 @@
-package com.hbsx.purordermanage.Examine;
+package com.hbsx.purordermanage.Other;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,11 +18,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hbsx.purordermanage.Examine.Adapter.ProviderOrderAdapter;
+import com.hbsx.purordermanage.Other.Adapter.OtherOrderAdapter;
 import com.hbsx.purordermanage.R;
 import com.hbsx.purordermanage.bean.PurchaseOrder;
-import com.hbsx.purordermanage.bean.User;
-import com.hbsx.purordermanage.utils.SimpleItemTouchHelperCallback;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -42,18 +39,17 @@ import cn.bmob.v3.listener.QueryListListener;
  * Created by Administrator on 2017/2/24 0024.
  */
 
-public class ProviderOrderFragment extends Fragment {
+public class OrderFragment extends Fragment {
     public static final String ORDER_STATE = "state";
     public static final String ORDER_DATE = "date";
-    private Button mCommitActualNum;
-    private TextView itemNumber;
+    private Button mJisuanButton,mSaveButton;
+    private TextView itemSum;
 
     private RelativeLayout mPriceLayout, mActualNumLayout, mPurchaseNumLayout;
 
-    private ItemTouchHelper mItemTouchHelper;
     private RecyclerView mRecyclerView;
     private List<PurchaseOrder> mPurchaseOrderList;
-    private ProviderOrderAdapter mAdapter;
+    private OtherOrderAdapter mAdapter;
 
     //查询日期,如果是当天，则为提交功能，仅显示价格表头，显示提交按钮，屏敝小计；
     // 如果不是当天则显示实数和价格表头，以及小计屏敝提交按钮
@@ -77,9 +73,10 @@ public class ProviderOrderFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_examine_actual_num, container, false);
+        View view = inflater.inflate(R.layout.fragment_other_actual_num, container, false);
         initView(view);
         getPurchaseOrderList(mOrderState);
+
         return view;
     }
 
@@ -87,62 +84,55 @@ public class ProviderOrderFragment extends Fragment {
      * 初始化视图
      */
     private void initView(View view) {
-        itemNumber = (TextView) view.findViewById(R.id.item_number);
-        mCommitActualNum = (Button) view.findViewById(R.id.ok_actual_number_btn);
-        mCommitActualNum.setOnClickListener(new View.OnClickListener() {
+        mJisuanButton = (Button) view.findViewById(R.id.jisuan_btn);
+        mJisuanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveOrderState(mPurchaseOrderList);
+                itemSum.setText(getOrdersPriceSum(mPurchaseOrderList)+"");
             }
         });
-        if (mOrderState == 3) {
-            mCommitActualNum.setVisibility(View.GONE);
-        }
+        itemSum = (TextView) view.findViewById(R.id.item_total);
+
+        mSaveButton = (Button) view.findViewById(R.id.save_btn);
+        mSaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new BmobBatch().updateBatch(BeanToBmobObject(mPurchaseOrderList))
+                        .doBatch(new QueryListListener<BatchResult>() {
+                    @Override
+                    public void done(List<BatchResult> list, BmobException e) {
+                            Toast toast = Toast.makeText(getContext(), "", Toast.LENGTH_LONG);// 显示时间也可以是数字
+                            toast.setGravity(Gravity.CENTER, 0, 0);// 最上方显示
+                            LinearLayout toastLayout = (LinearLayout) toast.getView();
+                            ImageView imageView = new ImageView(getContext());
+                        if (e != null) {
+                            toast.setText("提交失败");
+                            imageView.setImageResource(R.drawable.error);
+                            toastLayout.addView(imageView, 0);// 0 图片在文字的上方 ， 1 图片在文字的下方
+                            toast.show();
+                        } else {
+                            toast.setText("提交成功");
+                            imageView.setImageResource(R.drawable.sucess);
+                            toastLayout.addView(imageView, 0);// 0 图片在文字的上方 ， 1 图片在文字的下方
+                            toast.show();
+                        }
+
+
+                    }
+                });
+
+            }
+        });
+
         mActualNumLayout = (RelativeLayout) view.findViewById(R.id.commodity_item_header_actualnum);
         mActualNumLayout.setVisibility(View.VISIBLE);
-//        if (mOrderState == 1) {
-//            mPurchaseNumLayout = (RelativeLayout) view.findViewById(R.id.commodity_item_header_dingliang);
-//            mPurchaseNumLayout.setVisibility(View.VISIBLE);
-//        }
+
         mPriceLayout = (RelativeLayout) view.findViewById(R.id.commodity_item_header_price);
         mPriceLayout.setVisibility(View.VISIBLE);
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.examine_actual_number_view);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(llm);
-    }
-
-    private void saveOrderState(List<PurchaseOrder> list) {
-        final List<BmobObject> objects = new ArrayList<>();
-        for (PurchaseOrder order : list) {
-            if (order.getActualNum() != 0 && order.getOrderState() < 3) {//实际数量不等于0且未录入
-                order.setOrderState(3);
-                objects.add(order);
-            }
-        }
-        mPurchaseOrderList.removeAll(objects);//如果使用基本语句查询，则此方法会出现java.lang.UnsupportedOperationException
-        //因为查询结果是不可修改列表
-        mAdapter.notifyDataSetChanged();
-        new BmobBatch().updateBatch(objects).doBatch(new QueryListListener<BatchResult>() {
-            @Override
-            public void done(List<BatchResult> list, BmobException e) {
-                Toast toast = Toast.makeText(getContext(), null, Toast.LENGTH_LONG);// 显示时间也可以是数字
-                toast.setGravity(Gravity.CENTER, 0, 0);// 最上方显示
-                LinearLayout toastLayout = (LinearLayout) toast.getView();
-                ImageView imageView = new ImageView(getContext());
-                if (e != null) {
-                    toast.setText("提交失败");
-                    imageView.setImageResource(R.drawable.error);
-                    toastLayout.addView(imageView, 0);// 0 图片在文字的上方 ， 1 图片在文字的下方
-                    toast.show();
-                } else {
-                    toast.setText("提交成功");
-                    imageView.setImageResource(R.drawable.sucess);
-                    toastLayout.addView(imageView, 0);// 0 图片在文字的上方 ， 1 图片在文字的下方
-                    toast.show();
-                }
-            }
-        });
     }
 
     /**
@@ -164,11 +154,7 @@ public class ProviderOrderFragment extends Fragment {
         and.add(queryDate);
         //订单状态
         BmobQuery<PurchaseOrder> queryState = new BmobQuery<>();
-        if (mOrderState == 1) {
-            queryState.addWhereEqualTo("orderState", state);
-        } else {
-            queryState.addWhereGreaterThanOrEqualTo("orderState", state);
-        }
+        queryState.addWhereEqualTo("orderState", state);
         and.add(queryState);
 
         BmobQuery<PurchaseOrder> query = new BmobQuery<>();
@@ -232,19 +218,24 @@ public class ProviderOrderFragment extends Fragment {
             switch (msg.what) {
                 case SUPPLY_ORDER:
                     mPurchaseOrderList = (List<PurchaseOrder>) msg.getData().getSerializable("orders");
-                    mAdapter = new ProviderOrderAdapter(mPurchaseOrderList, mOrderState);
+                    mAdapter = new OtherOrderAdapter(mPurchaseOrderList, mOrderState);
                     mRecyclerView.setAdapter(mAdapter);
-                    if (mOrderState == 3) {
-                        //关联ItemTouchHelper和RecyclerView
-                        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mAdapter);
-                        mItemTouchHelper = new ItemTouchHelper(callback);
-                        mItemTouchHelper.attachToRecyclerView(mRecyclerView);
-                    }
                     break;
             }
         }
     };
+    /**
+     * 计算订单金额小计
+     */
+    public Float getOrdersPriceSum(List<PurchaseOrder> list) {
+        Float sum = 0.0f;
 
+        for (PurchaseOrder order : list) {
+            sum = sum + order.getActualAgain() * order.getPrice();
+        }
+        return (float) (Math.round(sum * 100)) / 100;
+
+    }
 
     /**
      * 构造一个Fragment,同时传入相应值
@@ -252,30 +243,23 @@ public class ProviderOrderFragment extends Fragment {
      * @param state
      * @return
      */
-    public static ProviderOrderFragment newInstance(int state, String orderDate, String provider) {
+    public static OrderFragment newInstance(int state, String orderDate, String provider) {
         Bundle bundle = new Bundle();
         bundle.putInt(ORDER_STATE, state);
         bundle.putString(ORDER_DATE, orderDate);
         bundle.putString("provider", provider);
-        ProviderOrderFragment fragment = new ProviderOrderFragment();
+        OrderFragment fragment = new OrderFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
 
-    /**
-     * 每次滑动都会调用setUserVisibleHint()这个方法，进行预加载后
-     *
-     * @param isVisibleToUser
-     */
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (mOrderState == 1) {
-            getPurchaseOrderList(1);
+    public List<BmobObject> BeanToBmobObject(List<PurchaseOrder> orders) {
+        List<BmobObject> bmobObjects = new ArrayList<>();
+        for (PurchaseOrder order : orders) {
+            BmobObject object = (BmobObject)order;
+            bmobObjects.add(object);
         }
-        if (mOrderState == 3) {
-            getPurchaseOrderList(3);
-        }
-
+        return  bmobObjects;
     }
+
 }
