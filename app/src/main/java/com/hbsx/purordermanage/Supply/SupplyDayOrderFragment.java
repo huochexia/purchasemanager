@@ -20,7 +20,6 @@ import com.hbsx.purordermanage.R;
 import com.hbsx.purordermanage.Supply.adapter.SupplyPriceDetailAdapter;
 import com.hbsx.purordermanage.bean.PurchaseOrder;
 import com.hbsx.purordermanage.bean.User;
-import com.hbsx.purordermanage.utils.Utility;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -51,7 +50,7 @@ public class SupplyDayOrderFragment extends Fragment {
     private RelativeLayout mPriceLayout;
 
     private RecyclerView mRecyclerView;
-    private List<PurchaseOrder> mPurchaseOrderList = new ArrayList<>();
+    private ArrayList<PurchaseOrder> mPurchaseOrderList = new ArrayList<>();
     private SupplyPriceDetailAdapter mAdapter;
 
     //查询日期,如果是当天，则为提交功能，仅显示价格表头，显示提交按钮，屏敝小计；
@@ -92,31 +91,39 @@ public class SupplyDayOrderFragment extends Fragment {
         mCommitPrice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    List<BmobObject> objects = new ArrayList<>();
-                    for (PurchaseOrder order : mPurchaseOrderList) {
-                        objects.add(order);
+                List<BmobObject> objects = new ArrayList<>();
+                for (PurchaseOrder order : mPurchaseOrderList) {
+                    //如果此时状态为2，已验货时，点击确认将状态变为3，已确认。
+                    if (mOrderState == 2) {
+                        order.setOrderState(3);
                     }
-                    new BmobBatch().updateBatch(objects).doBatch(new QueryListListener<BatchResult>() {
-                        @Override
-                        public void done(List<BatchResult> list, BmobException e) {
-                            Toast toast = Toast.makeText(getContext(), null, Toast.LENGTH_LONG);// 显示时间也可以是数字
-                            toast.setGravity(Gravity.CENTER, 0, 0);// 最上方显示
-                            LinearLayout toastLayout = (LinearLayout) toast.getView();
-                            ImageView imageView = new ImageView(getContext());
-                            if (e != null) {
-                                toast.setText("提交失败");
-                                imageView.setImageResource(R.drawable.error);
-                                toastLayout.addView(imageView, 0);// 0 图片在文字的上方 ， 1 图片在文字的下方
-                                toast.show();
-                            } else {
-                                toast.setText("提交成功");
-                                imageView.setImageResource(R.drawable.sucess);
-                                toastLayout.addView(imageView, 0);// 0 图片在文字的上方 ， 1 图片在文字的下方
-                                toast.show();
-                            }
-                        }
-                    });
+                    objects.add(order);
                 }
+                new BmobBatch().updateBatch(objects).doBatch(new QueryListListener<BatchResult>() {
+                    @Override
+                    public void done(List<BatchResult> list, BmobException e) {
+                        Toast toast = Toast.makeText(getContext(), null, Toast.LENGTH_LONG);// 显示时间也可以是数字
+                        toast.setGravity(Gravity.CENTER, 0, 0);// 最上方显示
+                        LinearLayout toastLayout = (LinearLayout) toast.getView();
+                        ImageView imageView = new ImageView(getContext());
+                        if (e != null) {
+                            toast.setText("提交失败");
+                            imageView.setImageResource(R.drawable.error);
+                            toastLayout.addView(imageView, 0);// 0 图片在文字的上方 ， 1 图片在文字的下方
+                            toast.show();
+                        } else {
+                            toast.setText("提交成功");
+                            imageView.setImageResource(R.drawable.sucess);
+                            toastLayout.addView(imageView, 0);// 0 图片在文字的上方 ， 1 图片在文字的下方
+                            toast.show();
+                        }
+                    }
+                });
+                if (mOrderState == 2) {
+                    mPurchaseOrderList.clear();
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
         });
         switch (mOrderState) {
             case 1:
@@ -184,12 +191,13 @@ public class SupplyDayOrderFragment extends Fragment {
                     //getResults返回一个不变的集合，Collections.unmodifiableList（）。
                     final List<PurchaseOrder> list = bmobQueryResult.getResults();
                     if (list != null && list.size() > 0) {
-                        mPurchaseOrderList = list;
+                        mPurchaseOrderList.clear();
+                        mPurchaseOrderList.addAll(list);
                         mAdapter = new SupplyPriceDetailAdapter(mPurchaseOrderList, mOrderState);
                         mRecyclerView.setAdapter(mAdapter);
                         mSum = getOrdersPriceSum(mPurchaseOrderList);
                         mPriceSum.setText("小计：" + mSum + " ");
-                    }else{
+                    } else {
                         mPriceSum.setText("没有商品被确认！");
                     }
 
@@ -262,10 +270,10 @@ public class SupplyDayOrderFragment extends Fragment {
     public Float getOrdersPriceSum(List<PurchaseOrder> list) {
         Float sum = 0.0f;
 
-            for (PurchaseOrder order : list) {
-                sum = sum + order.getActualNum() * order.getPrice();
-            }
-            return (float) (Math.round(sum * 100)) / 100;
+        for (PurchaseOrder order : list) {
+            sum = sum + order.getActualNum() * order.getPrice();
+        }
+        return (float) (Math.round(sum * 100)) / 100;
 
     }
 

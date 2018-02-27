@@ -108,7 +108,13 @@ public class OtherOrderAdapter extends RecyclerView.Adapter<OtherOrderAdapter.Vi
         //实数
         holder.mActualNumLayout.setVisibility(View.VISIBLE);
         holder.mActualNum.setText(purchaseOrder.getActualAgain().toString());
-        holder.mActualNum.setEnabled(true);
+        if (purchaseOrder.getOrderState() < 4) {
+            holder.mActualNum.setEnabled(true);
+        }else{
+            holder.mActualNum.setEnabled(false);
+            holder.mActualNum.setBackground(null);
+        }
+
         holder.mActualNum.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

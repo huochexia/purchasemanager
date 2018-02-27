@@ -94,15 +94,12 @@ public class ExamineOrderFragment extends Fragment {
                 saveOrderState(mPurchaseOrderList);
             }
         });
-        if (mOrderState == 3) {
+        if (mOrderState == 2) {
             mCommitActualNum.setVisibility(View.GONE);
         }
         mActualNumLayout = (RelativeLayout) view.findViewById(R.id.commodity_item_header_actualnum);
         mActualNumLayout.setVisibility(View.VISIBLE);
-//        if (mOrderState == 1) {
-//            mPurchaseNumLayout = (RelativeLayout) view.findViewById(R.id.commodity_item_header_dingliang);
-//            mPurchaseNumLayout.setVisibility(View.VISIBLE);
-//        }
+
         mPriceLayout = (RelativeLayout) view.findViewById(R.id.commodity_item_header_price);
         mPriceLayout.setVisibility(View.VISIBLE);
 
@@ -115,7 +112,7 @@ public class ExamineOrderFragment extends Fragment {
         final List<BmobObject> objects = new ArrayList<>();
         for (PurchaseOrder order : list) {
             if (order.getActualNum() != 0 && order.getOrderState() < 3) {//实际数量不等于0且未确认或未录入
-                order.setOrderState(3);
+                order.setOrderState(2);//将状态改为2，已验货。
                 objects.add(order);
             }
         }
@@ -272,8 +269,8 @@ public class ExamineOrderFragment extends Fragment {
         if (mOrderState == 1) {
             getPurchaseOrderList(1);
         }
-        if (mOrderState == 3) {
-            getPurchaseOrderList(3);
+        if (mOrderState == 2) {
+            getPurchaseOrderList(2);
         }
 
     }

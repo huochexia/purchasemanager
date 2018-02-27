@@ -85,9 +85,9 @@ public class ExamineOrderAdapter extends RecyclerView.Adapter<ExamineOrderAdapte
         holder.mPrice.setText(purchaseOrder.getPrice().toString());
         //实数
         holder.mActualNumLayout.setVisibility(View.VISIBLE);
-        holder.mActualNum.setText(purchaseOrder.getActualNum().toString());
+        holder.mActualNum.setText(purchaseOrder.getActualAgain().toString());
 
-        if (purchaseOrder.getOrderState() >= 3) {//已经验收且已确认或已录入
+        if (purchaseOrder.getOrderState() >=2) {//已经验收且已确认或已录入
             holder.mActualNum.setEnabled(false);
             holder.mActualNum.setBackground(null);
         } else {
@@ -159,10 +159,9 @@ public class ExamineOrderAdapter extends RecyclerView.Adapter<ExamineOrderAdapte
      */
     @Override
     public void onItemDismiss(final int position) {
-        if (mPurchaseOrders.get(position).getOrderState() == 3) {//只有为验货状态时才可以重新验货，尚未录入
+        if (mPurchaseOrders.get(position).getOrderState() == 2) {//只有为验货状态时才可以重新验货，尚未录入
             PurchaseOrder c = mPurchaseOrders.get(position);
             String id = c.getObjectId();
-//            c.setActualNum(0.0f);
             c.setOrderState(1);
             c.update(id, new UpdateListener() {
                 @Override
@@ -173,7 +172,7 @@ public class ExamineOrderAdapter extends RecyclerView.Adapter<ExamineOrderAdapte
             mPurchaseOrders.remove(position);
             notifyItemRemoved(position);
         } else {
-            Toast.makeText(mContext, "该项已录入，不能删除！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "该项已确认，不能修改！", Toast.LENGTH_SHORT).show();
         }
     }
 

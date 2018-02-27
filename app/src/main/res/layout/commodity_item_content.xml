@@ -73,7 +73,7 @@
             android:background="#FFFDFBFB"
             android:enabled="false"
             android:textColor="#000"
-            android:textSize="15sp"
+            android:textSize="18sp"
             android:inputType="number|numberDecimal|numberSigned"/>
     </RelativeLayout>
     <RelativeLayout
@@ -92,7 +92,7 @@
             android:layout_centerInParent="true"
             android:background="#FFFDFBFB"
             android:textColor="#000"
-            android:textSize="15sp"
+            android:textSize="18sp"
             android:inputType="number|numberDecimal|numberSigned"/>
     </RelativeLayout>
     <RelativeLayout
@@ -111,7 +111,7 @@
             android:layout_centerInParent="true"
             android:background="#FFFDFBFB"
             android:textColor="#000"
-            android:textSize="15sp"
+            android:textSize="18sp"
             android:inputType="number|numberDecimal"/>
     </RelativeLayout>
 

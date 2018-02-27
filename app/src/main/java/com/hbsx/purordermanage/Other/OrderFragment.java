@@ -154,7 +154,7 @@ public class OrderFragment extends Fragment {
         and.add(queryDate);
         //订单状态
         BmobQuery<PurchaseOrder> queryState = new BmobQuery<>();
-        queryState.addWhereEqualTo("orderState", state);
+        queryState.addWhereGreaterThanOrEqualTo("orderState", state);
         and.add(queryState);
 
         BmobQuery<PurchaseOrder> query = new BmobQuery<>();
