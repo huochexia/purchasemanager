@@ -1,5 +1,7 @@
 package com.hbsx.purordermanage.Supply;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -97,8 +99,11 @@ public class SupplyDayOrderFragment extends Fragment {
                     if (mOrderState == 2) {
                         order.setOrderState(3);
                     }
+                    //将新价格同步保存在本地
+                    setHistoricalPrice(order.getCommodityName(),order.getPrice());
                     objects.add(order);
                 }
+                //因为网络的不稳定，所以在发生变化时保存，然后在这里再增加一次整体保存。
                 new BmobBatch().updateBatch(objects).doBatch(new QueryListListener<BatchResult>() {
                     @Override
                     public void done(List<BatchResult> list, BmobException e) {
@@ -265,6 +270,15 @@ public class SupplyDayOrderFragment extends Fragment {
 //    };
 
     /**
+     * 将新价格保存在本地
+     */
+    private void setHistoricalPrice(String key, Float price) {
+        SharedPreferences mPre = getContext().getSharedPreferences("HistoricalPrice", Context.MODE_PRIVATE);
+        SharedPreferences.Editor mEditor = mPre.edit();
+        mEditor.putFloat(key, price);
+        mEditor.apply();
+    }
+    /**
      * 计算订单金额小计
      */
     public Float getOrdersPriceSum(List<PurchaseOrder> list) {
@@ -295,7 +309,6 @@ public class SupplyDayOrderFragment extends Fragment {
             }
 
         }
-
 
     }
 }

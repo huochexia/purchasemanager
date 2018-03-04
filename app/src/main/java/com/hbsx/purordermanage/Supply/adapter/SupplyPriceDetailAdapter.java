@@ -1,6 +1,7 @@
 package com.hbsx.purordermanage.Supply.adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -15,7 +16,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hbsx.purordermanage.POManageApplication;
 import com.hbsx.purordermanage.R;
 import com.hbsx.purordermanage.bean.PurchaseOrder;
 
@@ -34,7 +34,8 @@ public class SupplyPriceDetailAdapter extends RecyclerView.Adapter<SupplyPriceDe
     private Context mContext;
     private List<PurchaseOrder> mPurchaseOrders;
     private int state;
-
+    private SharedPreferences mPreferences;
+//    private SharedPreferences.Editor mEditor;
 
     /**
      * 通过构造方法获取数据源
@@ -43,6 +44,7 @@ public class SupplyPriceDetailAdapter extends RecyclerView.Adapter<SupplyPriceDe
     public SupplyPriceDetailAdapter(List<PurchaseOrder> list, int state) {
         this.mPurchaseOrders = list;
         this.state = state;
+
     }
 
     /**
@@ -56,6 +58,8 @@ public class SupplyPriceDetailAdapter extends RecyclerView.Adapter<SupplyPriceDe
             mContext = parent.getContext();
         }
         View view = LayoutInflater.from(mContext).inflate(R.layout.commodity_item_content, parent, false);
+        mPreferences = mContext.getSharedPreferences("HistoricalPrice", Context.MODE_PRIVATE);
+//        mEditor = mPreferences.edit();
         return new ViewHolder(view);
     }
 
@@ -74,29 +78,37 @@ public class SupplyPriceDetailAdapter extends RecyclerView.Adapter<SupplyPriceDe
         }
         holder.mPrice.setTag(purchaseOrder);
 
-        holder.mSerialNumber.setText(String.valueOf(position+1));
+        holder.mSerialNumber.setText(String.valueOf(position + 1));
         holder.mName.setText(purchaseOrder.getCommodityName());
         holder.mUnit.setText(purchaseOrder.getCommodityUnit());
         holder.mPriceLayout.setVisibility(View.VISIBLE);
         holder.mPrice.setEnabled(true);
-
-        holder.mPrice.setText(purchaseOrder.getPrice().toString());
+        Float price =purchaseOrder.getPrice();
+        if (price == 0) {//如果从数据库中的商品价格为0，则从本地获取历史价格
+            price=getHistoricalPrice(purchaseOrder.getCommodityName());
+        }
+        holder.mPrice.setText(price.toString());
         holder.mPrice.addTextChangedListener(new TextWatcher() {
+            PurchaseOrder order = (PurchaseOrder) holder.mPrice.getTag();
+            Float price =getHistoricalPrice(order.getCommodityName());
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 //得到对应的item
-                PurchaseOrder order = (PurchaseOrder) holder.mPrice.getTag();
-                if(TextUtils.isEmpty(s)){
+
+                //如果历史价格发生变化，用蓝色字提示用户这个价格在改变。
+                if (Float.valueOf(s.toString()) != price) {
+                    holder.mPrice.setTextColor(Color.BLUE);
+                }
+                if (TextUtils.isEmpty(s)) {
                     holder.mPrice.setText("0.0");
-                }else {
+                } else {
                     //为了防止item被系统还原，所以将变化也要保存在原始item中
-                    order.setPrice(Float.parseFloat(s+""));
-                    //将变化保存在数据库中
+                    order.setPrice(Float.parseFloat(s + ""));
+                    //将变化保存在数据库中,因为网络的不稳定，所以只要变化就保存到数据库中。
                     final String id = order.getObjectId();
                     order.setPrice(Float.parseFloat(order.getPrice().toString()));
                     order.update(id, new UpdateListener() {
@@ -107,15 +119,23 @@ public class SupplyPriceDetailAdapter extends RecyclerView.Adapter<SupplyPriceDe
                     });
                 }
 
-
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+                if (price != 0) {
+                    //新价格增涨30%以上，或者小于10%，说明价格变化大，有可是录入错误，要提醒用户注意
+                    boolean greater =Float.valueOf(s.toString())>price*1.3 ;
+                    boolean less = Float.valueOf(s.toString())*10<=price ;
+                    if (greater || less) {
+                        Toast.makeText(mContext,"价格变化较，请认真核对！",Toast.LENGTH_SHORT).show();
+                        holder.mPrice.setTextColor(Color.RED);
+                    }
+                }
             }
         });
 
-        switch (state){
+        switch (state) {
             case 1://已分配
                 holder.mPurchaseNumLayout.setVisibility(View.VISIBLE);
                 holder.mPurchaseNum.setText(purchaseOrder.getPurchaseNum().toString());
@@ -144,12 +164,28 @@ public class SupplyPriceDetailAdapter extends RecyclerView.Adapter<SupplyPriceDe
         return mPurchaseOrders.size();
     }
 
+//    /**
+//     * 将新价格做为历史数据保存本地
+//     */
+//    private void setHistoricalPrice(String commodityName, Float price) {
+//        mEditor.putFloat(commodityName, price);
+//        mEditor.apply();
+//    }
+
+    /**
+     * 从本地获取历史价格数据
+     */
+    private Float getHistoricalPrice(String commodityName) {
+        Float price = mPreferences.getFloat(commodityName, 0.0f);
+        return price;
+    }
+
     /**
      * 通过内部类ViewHolder获得视图控件对象,实现onStateChangeListener 接口，用于改变item被选中时的状态
      */
     public class ViewHolder extends RecyclerView.ViewHolder {
         LinearLayout mContentLayout;
-        TextView mSerialNumber,mName, mUnit;
+        TextView mSerialNumber, mName, mUnit;
         RelativeLayout mActualNumLayout, mPurchaseNumLayout, mPriceLayout;
         EditText mActualNum, mPurchaseNum, mPrice;
 
@@ -163,7 +199,7 @@ public class SupplyPriceDetailAdapter extends RecyclerView.Adapter<SupplyPriceDe
             mPriceLayout = (RelativeLayout) itemView.findViewById(R.id.commodity_item_content_price);
             mPrice = (EditText) itemView.findViewById(R.id.commodity_item_content_price_tv);
 
-            switch (state){
+            switch (state) {
                 case 1:
                     mPurchaseNumLayout = (RelativeLayout) itemView.findViewById(R.id.commodity_item_content_dingliang);
                     mPurchaseNum = (EditText) itemView.findViewById(R.id.commodity_item_content_dingliang_tv);

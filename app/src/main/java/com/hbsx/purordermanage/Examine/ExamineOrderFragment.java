@@ -230,12 +230,12 @@ public class ExamineOrderFragment extends Fragment {
                     mPurchaseOrderList = (List<PurchaseOrder>) msg.getData().getSerializable("orders");
                     mAdapter = new ExamineOrderAdapter(mPurchaseOrderList, mOrderState);
                     mRecyclerView.setAdapter(mAdapter);
-                    if (mOrderState == 3) {
-                        //关联ItemTouchHelper和RecyclerView
-                        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mAdapter);
-                        mItemTouchHelper = new ItemTouchHelper(callback);
-                        mItemTouchHelper.attachToRecyclerView(mRecyclerView);
-                    }
+//                    if (mOrderState == 2) {
+//                        //关联ItemTouchHelper和RecyclerView
+//                        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mAdapter);
+//                        mItemTouchHelper = new ItemTouchHelper(callback);
+//                        mItemTouchHelper.attachToRecyclerView(mRecyclerView);
+//                    }
                     break;
             }
         }

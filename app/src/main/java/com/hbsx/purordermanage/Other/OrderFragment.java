@@ -256,6 +256,7 @@ public class OrderFragment extends Fragment {
     public List<BmobObject> BeanToBmobObject(List<PurchaseOrder> orders) {
         List<BmobObject> bmobObjects = new ArrayList<>();
         for (PurchaseOrder order : orders) {
+            order.setOrderState(3);
             BmobObject object = (BmobObject)order;
             bmobObjects.add(object);
         }
