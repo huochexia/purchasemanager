@@ -67,8 +67,15 @@ public class OtherMainActivity extends BaseActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("再次确认验货");
-        toolbar.setNavigationIcon(R.mipmap.left_arrow);
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.mipmap.left_arrow);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               startActivity(CalculateActivity.class,null,false);
+            }
+        });
+
 
 
         gestureDetector = new GestureDetector(this, new MyGestureListener());

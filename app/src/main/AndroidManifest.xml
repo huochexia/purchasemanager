@@ -130,7 +130,7 @@
         <activity android:name=".Other.OtherMainActivity"/>
         <activity android:name=".Other.ProviderListActivity"/>
         <activity android:name=".Other.OtherOrderActivity"/>
-
+        <activity android:name=".Other.CalculateActivity"/>
         <!-- BmobPush 推送服务 start -->
         <service
             android:name="cn.bmob.push.lib.service.PushService"
