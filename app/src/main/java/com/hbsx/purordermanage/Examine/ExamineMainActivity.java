@@ -61,9 +61,14 @@ public class ExamineMainActivity extends BaseActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("验收商品");
-        toolbar.setNavigationIcon(R.mipmap.left_arrow);
         setSupportActionBar(toolbar);
-
+        toolbar.setNavigationIcon(R.mipmap.left_arrow);
+        toolbar.setNavigationOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         gestureDetector = new GestureDetector(this, new MyGestureListener());
         calV = new CalendarAdapter(this, getResources(), new Date(), jumpMonth, jumpYear,

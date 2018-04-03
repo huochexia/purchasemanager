@@ -68,13 +68,13 @@ public class OtherMainActivity extends BaseActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("再次确认验货");
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.mipmap.left_arrow);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               startActivity(CalculateActivity.class,null,false);
-            }
-        });
+//        toolbar.setNavigationIcon(R.mipmap.left_arrow);
+//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//               startActivity(CalculateActivity.class,null,false);
+//            }
+//        });
 
 
 
@@ -268,19 +268,22 @@ public class OtherMainActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.repair_password,menu);
+        getMenuInflater().inflate(R.menu.other_menu,menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.repair_password_btn:
+            case R.id.repair_password:
                 startActivity(RepairPassWordActivity.class,null,false);
                 break;
-            case R.id.logout_btn:
+            case R.id.logout:
                 BmobUser.logOut();
                 ActivityCollector.finishAll();
+                break;
+            case R.id.calculate:
+                startActivity(CalculateActivity.class,null,false);
                 break;
         }
         return true;

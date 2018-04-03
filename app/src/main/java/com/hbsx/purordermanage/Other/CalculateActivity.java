@@ -148,7 +148,7 @@ public class CalculateActivity extends BaseActivity {
 
     public static final int SUM = 1;
     public static final int USER_REQUEST = 2;
-    private Handler handler = new Handler() {
+    private  Handler handler = new Handler() {
         @Override
         public void handleMessage(final Message msg) {
             switch (msg.what) {

@@ -32,6 +32,7 @@ public class SupplyDayOrderActivity extends BaseActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(mOrderDate+" 订单");
+        setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.mipmap.left_arrow);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,7 +40,6 @@ public class SupplyDayOrderActivity extends BaseActivity {
                 finish();
             }
         });
-        setSupportActionBar(toolbar);
 
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         MyViewPagerAdapter viewPagerAdapter = new MyViewPagerAdapter(getSupportFragmentManager());

@@ -87,7 +87,7 @@ public class ExamineOrderAdapter extends RecyclerView.Adapter<ExamineOrderAdapte
         holder.mActualNumLayout.setVisibility(View.VISIBLE);
         holder.mActualNum.setText(purchaseOrder.getActualAgain().toString());
 
-        if (purchaseOrder.getOrderState() >2) {//已经验收且已确认或已录入
+        if (purchaseOrder.getOrderState() >=2) {//已经验收且已确认或已录入
             holder.mActualNum.setEnabled(false);
             holder.mActualNum.setBackground(null);
         } else {
@@ -95,8 +95,7 @@ public class ExamineOrderAdapter extends RecyclerView.Adapter<ExamineOrderAdapte
         }
 
         holder.mActualNum.addTextChangedListener(new TextWatcher() {
-            PurchaseOrder order = (PurchaseOrder) holder.mActualNum.getTag();
-            Float purchaseNum = order.getPurchaseNum();
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -104,38 +103,30 @@ public class ExamineOrderAdapter extends RecyclerView.Adapter<ExamineOrderAdapte
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                PurchaseOrder order = (PurchaseOrder) holder.mActualNum.getTag();
+                Float purchaseNum = order.getPurchaseNum();
                 if (TextUtils.isEmpty(s)) {
                     holder.mActualNum.setText("0.0");
                 } else {
                     //为了防止因滑动将EditText中内容还原为初始值，将改变存入该item中
                     order.setActualNum(Float.parseFloat(s+""));
                     order.setActualAgain(Float.parseFloat(s+""));
-
-                    // 存入数据库
-                    final String id = order.getObjectId();
-                    order.update(id, new UpdateListener() {
-                        @Override
-                        public void done(BmobException e) {
-                            if (e != null) {
-                                Toast.makeText(mContext,"保存失败，请重新输入！",Toast.LENGTH_LONG).show();
-                            }
+                    if (order.getOrderState()<= 2) {
+                      //验货过程中，供货商还没有确认时比较订量与实数，以提醒验货员是否录入错误
+                        boolean less = (Float.parseFloat(s + "") - purchaseNum) > (purchaseNum * 0.2);
+                        if (!less) {
+                            holder.mActualNum.setTextColor(Color.BLACK);
+                        } else {
+                            holder.mActualNum.setTextColor(Color.RED);
                         }
-                    });
+                    }
                 }
 
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                //比较订量与实数
-                boolean less = (Float.parseFloat(s+"") - purchaseNum) > (purchaseNum * 0.2) ;
-                if (!less) {
-                    holder.mActualNum.setTextColor(Color.BLACK);
-                } else {
-                    Toast.makeText(mContext, "实际数量比订单多20%,请核实！", Toast.LENGTH_SHORT).show();
-                    holder.mActualNum.setTextColor(Color.RED);
-                }
+
             }
         });
 
@@ -161,7 +152,7 @@ public class ExamineOrderAdapter extends RecyclerView.Adapter<ExamineOrderAdapte
      */
     @Override
     public void onItemDismiss(final int position) {
-        if (mPurchaseOrders.get(position).getOrderState()<3) {//只有为验货状态时才可以重新验货，尚未录入
+        if (mPurchaseOrders.get(position).getOrderState()==2) {//只有为验货状态时才可以重新验货，尚未录入
             PurchaseOrder c = mPurchaseOrders.get(position);
             String id = c.getObjectId();
             c.setOrderState(1);

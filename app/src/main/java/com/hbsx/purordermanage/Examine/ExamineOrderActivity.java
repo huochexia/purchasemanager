@@ -36,6 +36,7 @@ public class ExamineOrderActivity extends BaseActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(provider+" 订单");
         toolbar.setSubtitle(mOrderDate);
+        setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.mipmap.left_arrow);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,7 +44,7 @@ public class ExamineOrderActivity extends BaseActivity {
                 finish();
             }
         });
-        setSupportActionBar(toolbar);
+
 
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         MyViewPagerAdapter viewPagerAdapter = new MyViewPagerAdapter(getSupportFragmentManager());

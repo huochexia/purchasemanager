@@ -2,16 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/repair_password_btn"
+        android:id="@+id/repair_password"
         android:title="修改密码"
         android:icon="@mipmap/document_edit"
         app:showAsAction="never"
         />
     <item
-        android:id="@+id/logout_btn"
+        android:id="@+id/logout"
         android:icon="@mipmap/ic_menu_exit"
         android:title="注销"
         app:showAsAction="never"
         />
-
+    <item
+        android:id="@+id/calculate"
+        android:title="查询单据"
+        android:icon="@mipmap/search_icon"
+        app:showAsAction="always"
+        />
 </menu>

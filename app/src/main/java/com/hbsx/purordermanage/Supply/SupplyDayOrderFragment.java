@@ -121,13 +121,14 @@ public class SupplyDayOrderFragment extends Fragment {
                             imageView.setImageResource(R.drawable.sucess);
                             toastLayout.addView(imageView, 0);// 0 图片在文字的上方 ， 1 图片在文字的下方
                             toast.show();
+                            mPurchaseOrderList.clear();
+                            mAdapter.notifyDataSetChanged();
                         }
                     }
                 });
-                if (mOrderState == 2) {
-                    mPurchaseOrderList.clear();
-                    mAdapter.notifyDataSetChanged();
-                }
+//                if (mOrderState == 2) {
+//
+//                }
             }
         });
         switch (mOrderState) {

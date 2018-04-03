@@ -89,8 +89,7 @@ public class SupplyPriceDetailAdapter extends RecyclerView.Adapter<SupplyPriceDe
         }
         holder.mPrice.setText(price.toString());
         holder.mPrice.addTextChangedListener(new TextWatcher() {
-            PurchaseOrder order = (PurchaseOrder) holder.mPrice.getTag();
-            Float price =getHistoricalPrice(order.getCommodityName());
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -98,7 +97,8 @@ public class SupplyPriceDetailAdapter extends RecyclerView.Adapter<SupplyPriceDe
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 //得到对应的item
-
+                PurchaseOrder order = (PurchaseOrder) holder.mPrice.getTag();
+                Float price =getHistoricalPrice(order.getCommodityName());
                 //如果历史价格发生变化，用蓝色字提示用户这个价格在改变。
                 if (Float.valueOf(s.toString()) != price) {
                     holder.mPrice.setTextColor(Color.BLUE);
@@ -118,20 +118,20 @@ public class SupplyPriceDetailAdapter extends RecyclerView.Adapter<SupplyPriceDe
                         }
                     });
                 }
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
                 if (price != 0) {
                     //新价格增涨30%以上，或者小于10%，说明价格变化大，有可是录入错误，要提醒用户注意
                     boolean greater =Float.valueOf(s.toString())>price*1.3 ;
                     boolean less = Float.valueOf(s.toString())*10<=price ;
                     if (greater || less) {
-                        Toast.makeText(mContext,"价格变化较，请认真核对！",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext,"价格变化较大，请认真核对！",Toast.LENGTH_SHORT).show();
                         holder.mPrice.setTextColor(Color.RED);
                     }
                 }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 
@@ -164,13 +164,7 @@ public class SupplyPriceDetailAdapter extends RecyclerView.Adapter<SupplyPriceDe
         return mPurchaseOrders.size();
     }
 
-//    /**
-//     * 将新价格做为历史数据保存本地
-//     */
-//    private void setHistoricalPrice(String commodityName, Float price) {
-//        mEditor.putFloat(commodityName, price);
-//        mEditor.apply();
-//    }
+
 
     /**
      * 从本地获取历史价格数据

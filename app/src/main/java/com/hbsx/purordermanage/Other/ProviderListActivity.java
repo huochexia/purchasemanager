@@ -47,6 +47,7 @@ public class ProviderListActivity extends BaseActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("选择供货商");
         toolbar.setSubtitle(orderDate);
+        setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.mipmap.left_arrow);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,7 +55,6 @@ public class ProviderListActivity extends BaseActivity {
                 finish();
             }
         });
-        setSupportActionBar(toolbar);
 
         mProviderList = new ArrayList<>();
         mProviderView = (RecyclerView) findViewById(R.id.search_list);
