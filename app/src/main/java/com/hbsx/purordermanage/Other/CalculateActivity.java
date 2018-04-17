@@ -28,6 +28,7 @@ import java.util.List;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.UpdateListener;
 
 /**
  * Created by Administrator on 2018/3/25 0025.
@@ -38,6 +39,7 @@ public class CalculateActivity extends BaseActivity {
     private Button mStartDateBtn;
     private Button mEndDateBtn;
     private Button mCalculateBtn;
+    private Button mMeragerBtn;
 
     private TextView mStartText;
     private TextView mEndText;
@@ -47,6 +49,8 @@ public class CalculateActivity extends BaseActivity {
     List<User> mProviderList = new ArrayList<>();
     ProviderAdapter spinnerAdapter;
     User provider;
+
+    List<PurchaseOrder> mList = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,6 +88,7 @@ public class CalculateActivity extends BaseActivity {
         mStartDateBtn = (Button) findViewById(R.id.btn_start_date);
         mEndDateBtn = (Button) findViewById(R.id.btn_end_date);
         mCalculateBtn = (Button) findViewById(R.id.btn_calculate_total);
+        mMeragerBtn = (Button) findViewById(R.id.btn_merge);
 
         mStartText = (TextView) findViewById(R.id.tv_start_date);
         mEndText = (TextView) findViewById(R.id.tv_end_date);
@@ -114,7 +119,28 @@ public class CalculateActivity extends BaseActivity {
             public void onClick(View v) {
                 mOriginal.setText("");
                 mDifference.setText("");
-                getTotal(mStartText.getText().toString(),mEndText.getText().toString());
+                getTotal(mStartText.getText().toString(), mEndText.getText().toString());
+            }
+        });
+        //合并
+        mMeragerBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(CalculateActivity.this);
+                builder1.setTitle("是否合并");
+                builder1.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        getMerge(mStartText.getText().toString(), mEndText.getText().toString());
+                    }
+                });
+                builder1.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder1.create().show();
             }
         });
     }
@@ -148,7 +174,8 @@ public class CalculateActivity extends BaseActivity {
 
     public static final int SUM = 1;
     public static final int USER_REQUEST = 2;
-    private  Handler handler = new Handler() {
+    public static final int MERGE = 3;
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(final Message msg) {
             switch (msg.what) {
@@ -167,16 +194,38 @@ public class CalculateActivity extends BaseActivity {
                     Float diffpice = 0.0f;
                     List<PurchaseOrder> list = (List<PurchaseOrder>) msg.getData().getSerializable("total");
                     Iterator it = list.iterator();
-                    while(it.hasNext()){
+                    while (it.hasNext()) {
                         PurchaseOrder psi = (PurchaseOrder) it.next();
-                        sumprice=sumprice+psi.getActualNum()*psi.getPrice();
-                        diffpice=diffpice+(psi.getActualAgain()-psi.getActualNum())*psi.getPrice();
+                        sumprice = sumprice + psi.getActualNum() * psi.getPrice();
+                        diffpice = diffpice + (psi.getActualAgain() - psi.getActualNum()) * psi.getPrice();
 
                     }
                     Float sum = (float) (Math.round(sumprice * 100)) / 100;
                     mOriginal.setText(sum + "");
-                    Float diff = (float)(Math.round(diffpice*100))/100;
-                    mDifference.setText(diff+"");
+                    Float diff = (float) (Math.round(diffpice * 100)) / 100;
+                    mDifference.setText(diff + "");
+                    break;
+                case MERGE:
+                    List<PurchaseOrder> mergeList = (List<PurchaseOrder>) msg.getData().getSerializable("merge");
+                    int length = mergeList.size();
+                    for (int i = 0; i < length; i++) {
+                        PurchaseOrder order = mergeList.get(i);
+                        float a = order.getActualAgain();
+                        float b = order.getActualNum();
+                        if (a!=b) {
+                            String objectId = order.getObjectId();
+                            order.setActualNum(order.getActualAgain());
+                            order.setPurchaseNum(order.getActualAgain());
+                            order.update(objectId, new UpdateListener() {
+                                @Override
+                                public void done(BmobException e) {
+
+                                }
+                            });
+                        }
+
+                    }
+                    break;
 
             }
         }
@@ -226,6 +275,7 @@ public class CalculateActivity extends BaseActivity {
         builder.create().show();
 
     }
+
     /**
      * 计算两个日期间商品金额合计
      *
@@ -264,6 +314,53 @@ public class CalculateActivity extends BaseActivity {
                             msg.what = SUM;
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("total", (Serializable) list);
+                            msg.setData(bundle);
+                            handler.sendMessage(msg);
+                        }
+                    }).start();
+                }
+            }
+        });
+    }
+
+    /**
+     * 计算两个日期间商品金额合计
+     *
+     * @param
+     * @return
+     */
+    public void getMerge(String start, String end) {
+        List<BmobQuery<PurchaseOrder>> and = new ArrayList<>();
+
+        BmobQuery<PurchaseOrder> queryUser = new BmobQuery<>();
+        queryUser.addWhereEqualTo("providername", provider.getUsername());
+        and.add(queryUser);
+
+        BmobQuery<PurchaseOrder> startQ = new BmobQuery<>();
+        startQ.addWhereGreaterThanOrEqualTo("orderDate", start);
+        and.add(startQ);
+
+        BmobQuery<PurchaseOrder> endQ = new BmobQuery<>();
+        endQ.addWhereLessThanOrEqualTo("orderDate", end);
+        and.add(endQ);
+        BmobQuery<PurchaseOrder> stateQ = new BmobQuery<>();
+        stateQ.addWhereEqualTo("orderState", 4);//已确认的订单
+        and.add(stateQ);
+        //组合查询条件
+        BmobQuery<PurchaseOrder> query = new BmobQuery<>();
+        query.and(and);
+        query.setLimit(999);
+        query.findObjects(new FindListener<PurchaseOrder>() {
+            @Override
+            public void done(final List<PurchaseOrder> list, BmobException e) {
+                if (e == null) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Message msg = new Message();
+                            msg.what = MERGE;
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("merge", (Serializable) list);
                             msg.setData(bundle);
                             handler.sendMessage(msg);
                         }
