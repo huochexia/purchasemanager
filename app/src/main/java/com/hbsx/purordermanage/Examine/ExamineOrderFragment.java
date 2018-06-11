@@ -45,6 +45,7 @@ import rx.schedulers.Schedulers;
 
 /**
  * 验货清单Fragment，一种是未验货，一种是已验货，已验货的在未录入之前可删除变成未验货，重新验货
+ * 获得商品清单后，根据供货商所报价格，更新数据库中商品单价
  * Created by Administrator on 2017/2/24 0024.
  */
 
