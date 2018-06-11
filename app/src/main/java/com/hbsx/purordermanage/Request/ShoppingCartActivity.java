@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hbsx.purordermanage.base.BaseActivity;
@@ -27,6 +28,8 @@ import com.hbsx.purordermanage.bean.ShoppingCart;
 import com.hbsx.purordermanage.bean.User;
 import com.hbsx.purordermanage.utils.SimpleItemTouchHelperCallback;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.litepal.crud.DataSupport;
 
 import java.text.SimpleDateFormat;
@@ -49,8 +52,8 @@ import cn.bmob.v3.listener.QueryListListener;
 public class ShoppingCartActivity extends BaseActivity  {
 
     private Toolbar toolbar;
-
-    private List<BmobObject> orders;//生成订单中商品列表
+    public TextView priceTotal;
+    private List<ShoppingCart> orders;//生成订单中商品列表
 
     private List<BmobObject> mCommodityList;//购物车中商品列表
     private RecyclerView mCommodityView;
@@ -59,12 +62,12 @@ public class ShoppingCartActivity extends BaseActivity  {
     private ItemTouchHelper mItemTouchHelper;
 
     RelativeLayout mPurchaseNumLayout;
-
+    RelativeLayout mPurchasePriceLayout;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_cart);
-
+        EventBus.getDefault().register(this);
         //初始化工具栏
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("购物车");
@@ -76,23 +79,28 @@ public class ShoppingCartActivity extends BaseActivity  {
             }
         });
         setSupportActionBar(toolbar);
+        //购物车中商品总价值
+        priceTotal = (TextView) findViewById(R.id.price_total);
         //屏敝增加商品的浮动按钮功能
         mFB = (FloatingActionButton) findViewById(R.id.btn_add_commodity);
         mFB.setVisibility(View.GONE);
         //显示商品列表上表头的订量
         mPurchaseNumLayout = (RelativeLayout) findViewById(R.id.commodity_item_header_dingliang);
         mPurchaseNumLayout.setVisibility(View.VISIBLE);
+        mPurchasePriceLayout = (RelativeLayout) findViewById(R.id.commodity_item_header_price);
+        mPurchasePriceLayout.setVisibility(View.VISIBLE);
         mCommodityList = new ArrayList<>();
         orders = new ArrayList<>();
         mCommodityView = (RecyclerView) findViewById(R.id.commodity_detail_list);
         LinearLayoutManager lm = new LinearLayoutManager(this);
         mCommodityView.setLayoutManager(lm);
-        getCommodityList();
+//        getCommodityList();
 
-
-        mAdapter = new ShoppingCartListAdapter(mCommodityList);
+        orders = DataSupport.findAll(ShoppingCart.class, true);
+        priceTotal.setText(computeTotal()+"");
+        mAdapter = new ShoppingCartListAdapter(orders);
         mCommodityView.setAdapter(mAdapter);
-        toolbar.setSubtitle("共"+mCommodityList.size()+"项商品");
+        toolbar.setSubtitle("共"+orders.size()+"项商品");
 
         //关联ItemTouchHelper和RecyclerView,用于侧滑删除
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mAdapter);
@@ -132,7 +140,13 @@ public class ShoppingCartActivity extends BaseActivity  {
         }
         return super.onOptionsItemSelected(item);
     }
-
+    public Float computeTotal() {
+        Float total = 0.0f;
+        for (ShoppingCart sc : orders) {
+            total =total+ sc.getPurchaseNum()*sc.getPurchasePrice();
+        }
+        return total;
+    }
     /**
      * 保存报货单
      * @param list
@@ -147,6 +161,7 @@ public class ShoppingCartActivity extends BaseActivity  {
                     DataSupport.deleteAll(ShoppingCart.class,"purchaseNum <> ?","0.0");
                     toast("提交成功",true);
                     mCommodityList.clear();
+                    orders.clear();
                     getCommodityList();
                     mAdapter.notifyDataSetChanged();
                 } else {
@@ -161,7 +176,7 @@ public class ShoppingCartActivity extends BaseActivity  {
      * @return
      */
     @NonNull
-    private List<BmobObject> getRequestNote() {
+    public List<BmobObject> getRequestNote() {
         List<BmobObject> objects = new ArrayList<>();
         //获取购物车中的物品
         List<ShoppingCart> goodList = DataSupport.findAll(ShoppingCart.class, true);
@@ -198,5 +213,13 @@ public class ShoppingCartActivity extends BaseActivity  {
         Intent intent = new Intent(mContext, ShoppingCartActivity.class);
         mContext.startActivity(intent);
     }
-
+    @Subscribe
+    public void onEventMainThread(TotalEvent event) {
+        priceTotal.setText(event.getTotal()+"");
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }

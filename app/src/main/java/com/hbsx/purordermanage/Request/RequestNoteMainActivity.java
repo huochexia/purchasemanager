@@ -112,6 +112,7 @@ public class RequestNoteMainActivity extends BaseActivity {
         String category = commodity.getCommCategory().getCategoryName();
         good.setCategory(category);
         good.setCommodityName(commodity.getCommName());
+        good.setPurchasePrice(commodity.getPrice());
         List<Unit> units = DataSupport.where("objectId = ?", commodity.getUnit().getObjectId()).find(Unit.class);
         if (units.size() > 0) {
             good.setUnit(units.get(0));

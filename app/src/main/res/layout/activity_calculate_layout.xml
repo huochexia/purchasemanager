@@ -119,5 +119,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:text="合并"
-        android:textSize="16sp"/>
+        android:textSize="16sp"
+        android:visibility="gone"/>
 </LinearLayout>

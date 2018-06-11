@@ -3,6 +3,7 @@ package com.hbsx.purordermanage.Examine;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import com.hbsx.purordermanage.Examine.Adapter.ExamineOrderAdapter;
 import com.hbsx.purordermanage.R;
+import com.hbsx.purordermanage.bean.Commodity;
 import com.hbsx.purordermanage.bean.PurchaseOrder;
 import com.hbsx.purordermanage.utils.SimpleItemTouchHelperCallback;
 
@@ -35,6 +37,11 @@ import cn.bmob.v3.datatype.BatchResult;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.QueryListListener;
+import cn.bmob.v3.listener.UpdateListener;
+import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * 验货清单Fragment，一种是未验货，一种是已验货，已验货的在未录入之前可删除变成未验货，重新验货
@@ -108,17 +115,21 @@ public class ExamineOrderFragment extends Fragment {
         mRecyclerView.setLayoutManager(llm);
     }
 
-    private void saveOrderState(List<PurchaseOrder> list) {
+    private void saveOrderState(final List<PurchaseOrder> list1) {
         final List<BmobObject> objects = new ArrayList<>();
-        for (PurchaseOrder order : list) {
+        for (final PurchaseOrder order : list1) {
             if (order.getActualNum() != 0 && order.getOrderState() < 3) {//实际数量不等于0且未确认或未录入
                 order.setOrderState(2);//将状态改为2，已验货。
+                //将当前单价更新到商品库中
+//                updateCommodityPrice(order);
                 objects.add(order);
             }
         }
-        mPurchaseOrderList.removeAll(objects);//如果使用基本语句查询，则此方法会出现java.lang.UnsupportedOperationException
+        //从列表中移走已经改变状态的商品。如果使用基本语句查询，则此方法会出现java.lang.UnsupportedOperationException
         //因为查询结果是不可修改列表
+        mPurchaseOrderList.removeAll(objects);
         mAdapter.notifyDataSetChanged();
+        // 保存已经修改状态的商品到数据库
         new BmobBatch().updateBatch(objects).doBatch(new QueryListListener<BatchResult>() {
             @Override
             public void done(List<BatchResult> list, BmobException e) {
@@ -132,6 +143,7 @@ public class ExamineOrderFragment extends Fragment {
                     toastLayout.addView(imageView, 0);// 0 图片在文字的上方 ， 1 图片在文字的下方
                     toast.show();
                 } else {
+
                     toast.setText("提交成功");
                     imageView.setImageResource(R.drawable.sucess);
                     toastLayout.addView(imageView, 0);// 0 图片在文字的上方 ， 1 图片在文字的下方
@@ -140,6 +152,8 @@ public class ExamineOrderFragment extends Fragment {
             }
         });
     }
+
+
 
     /**
      * 获取订单列表
@@ -222,7 +236,7 @@ public class ExamineOrderFragment extends Fragment {
     }
 
     public static final int SUPPLY_ORDER = 0;
-    public Handler handler = new Handler() {
+    public  Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -236,11 +250,51 @@ public class ExamineOrderFragment extends Fragment {
                         mItemTouchHelper = new ItemTouchHelper(callback);
                         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
                     }
+                    //利用RxJava，过滤单价掉单价为0的，更新数据库中商品单价
+                    Observable.from(mPurchaseOrderList)
+                            .subscribeOn(Schedulers.io())
+                            .filter(new Func1<PurchaseOrder, Boolean>() {
+                                @Override
+                                public Boolean call(PurchaseOrder purchaseOrder) {
+                                    return purchaseOrder.getPrice()>0;
+                                }
+                            })
+                            .subscribe(new Action1<PurchaseOrder>() {
+                                @Override
+                                public void call(PurchaseOrder purchaseOrder) {
+                                    updateCommodityPrice(purchaseOrder);
+                                }
+                            });
                     break;
             }
         }
     };
+    /**
+     * 修改商品的单价
+     */
+    public void updateCommodityPrice(final PurchaseOrder order) {
+        BmobQuery<Commodity> query = new BmobQuery<>();
+        String name = order.getCommodityName();
+        query.addWhereEqualTo("commName", name);
+        query.findObjects(new FindListener<Commodity>() {
+            @Override
+            public void done(List<Commodity> list, BmobException e) {
+                if (e == null) {
+                    Commodity commodity = new Commodity();
+                    Float price = order.getPrice();
+                    commodity.setValue("price", price);
+                    String objectId = list.get(0).getObjectId();
+                    commodity.update(objectId, new UpdateListener() {
+                        @Override
+                        public void done(BmobException e) {
 
+                        }
+                    });
+                }
+            }
+        });
+
+    }
 
     /**
      * 构造一个Fragment,同时传入相应值

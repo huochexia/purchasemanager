@@ -17,10 +17,12 @@ import android.widget.TextView;
 
 import com.hbsx.purordermanage.R;
 import com.hbsx.purordermanage.Request.ShoppingCartActivity;
+import com.hbsx.purordermanage.Request.TotalEvent;
 import com.hbsx.purordermanage.bean.Commodity;
 import com.hbsx.purordermanage.bean.ShoppingCart;
 import com.hbsx.purordermanage.utils.onMoveAndSwipedListener;
 
+import org.greenrobot.eventbus.EventBus;
 import org.litepal.crud.DataSupport;
 
 import java.util.HashMap;
@@ -37,12 +39,15 @@ import cn.bmob.v3.BmobObject;
 public class ShoppingCartListAdapter extends RecyclerView.Adapter<ShoppingCartListAdapter.ViewHolder>
         implements onMoveAndSwipedListener {
 
-    List<BmobObject> mGoodsList;
+    List<ShoppingCart> mGoodsList;
     Context mContext;
     Map<Integer, Commodity> index = new HashMap<>();
+    TotalEvent mEvent;
 
-    public ShoppingCartListAdapter(List<BmobObject> list) {
+
+    public ShoppingCartListAdapter(List<ShoppingCart> list) {
         mGoodsList = list;
+        mEvent = new TotalEvent();
     }
 
     @Override
@@ -64,19 +69,19 @@ public class ShoppingCartListAdapter extends RecyclerView.Adapter<ShoppingCartLi
         }
 
         holder.mSerialNumber.setText(String.valueOf(position+1));
-        final Commodity commodityItem = (Commodity) mGoodsList.get(position);
-        holder.mName.setText(commodityItem.getCommName());
+        final ShoppingCart commodityItem =  mGoodsList.get(position);
+        holder.mName.setText(commodityItem.getCommodityName());
         holder.mUnit.setText(commodityItem.getUnit().getUnitName());
+        holder.mPurchasePrice.setText(commodityItem.getPurchasePrice()+"");
         holder.mPurchaseNum.setTag(commodityItem);
         holder.mPurchaseNum.setText(commodityItem.getPurchaseNum().toString());
-
         holder.mPurchaseNum.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Commodity bean = (Commodity) holder.mPurchaseNum.getTag();
+                ShoppingCart bean = (ShoppingCart) holder.mPurchaseNum.getTag();
                 if (TextUtils.isEmpty(s)) {//如果s为空，则Float.pareseFloat(s+"")会产生异常
                     holder.mPurchaseNum.setText("0.0");
                 } else {
@@ -84,10 +89,13 @@ public class ShoppingCartListAdapter extends RecyclerView.Adapter<ShoppingCartLi
                     //防止该item被重置为改变前状态，将其临时保存
                     bean.setPurchaseNum(Float.parseFloat(s + ""));
                     //同时将变化后的bean保存在本地数据库中
-                    ShoppingCart good = new ShoppingCart();
-                    good.setPurchaseNum(bean.getPurchaseNum());
+//                    ShoppingCart good = new ShoppingCart();
+//                    good.setPurchaseNum(bean.getPurchaseNum());
                     String objectId = bean.getObjectId();
-                    good.updateAll("objectId = ?", objectId);
+                    bean.updateAll("objectId = ?", objectId);
+                    //通过EventBus方式通知购物车主界面修改商品总价值
+                    mEvent.total=computeTotal();
+                    EventBus.getDefault().post(mEvent);
                 }
 
             }
@@ -134,13 +142,25 @@ public class ShoppingCartListAdapter extends RecyclerView.Adapter<ShoppingCartLi
 
     }
 
+    /**
+     * 计算购物车中所有商品总价值
+     */
+    public Float computeTotal() {
+        Float total = 0.0f;
+        for (ShoppingCart sc : mGoodsList) {
+            total =total+ sc.getPurchaseNum()*sc.getPurchasePrice();
+        }
+        return total;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView mName;
         TextView mUnit,mSerialNumber;
         RelativeLayout mPurchaseNumLayout;
         EditText mPurchaseNum;
         LinearLayout mContentLayout;
-
+        RelativeLayout mPurchasePriceLayout;
+        EditText mPurchasePrice;
         public ViewHolder(View itemView) {
             super(itemView);
             initView(itemView);
@@ -160,7 +180,11 @@ public class ShoppingCartListAdapter extends RecyclerView.Adapter<ShoppingCartLi
             mPurchaseNumLayout.setVisibility(View.VISIBLE);
             mPurchaseNum = (EditText) view.findViewById(R.id.commodity_item_content_dingliang_tv);
             mPurchaseNum.setEnabled(true);
-
+            mPurchasePriceLayout = (RelativeLayout) view.findViewById(R.id.commodity_item_content_price);
+            mPurchasePriceLayout.setVisibility(View.VISIBLE);
+            mPurchasePrice = (EditText) view.findViewById(R.id.commodity_item_content_price_tv);
+            mPurchasePrice.setEnabled(false);
+            mPurchasePrice.setBackground(null);
         }
     }
 

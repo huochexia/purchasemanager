@@ -18,12 +18,14 @@ public class Commodity extends BmobObject {
     private UnitOfMeasurement unit;
     //商品数量，不写入商品数据库中
     private Float purchaseNum=0.0f;
-
+    //商品单价，当验货时更新为最新价格
+    private Float price = 0.0f;
     //选择状态标志,不写入商品数据库中
     private boolean isSelected ;
 
-    //无参数构造方法
-
+    /**
+     *  无参数构造方法
+     */
     public Commodity(){
 
     }
@@ -60,6 +62,14 @@ public class Commodity extends BmobObject {
 
     public void setPurchaseNum(Float purchaseNum) {
         this.purchaseNum = purchaseNum;
+    }
+
+    public Float getPrice() {
+        return price;
+    }
+
+    public void setPrice(Float price) {
+        this.price = price;
     }
 
     public UnitOfMeasurement getUnit() {

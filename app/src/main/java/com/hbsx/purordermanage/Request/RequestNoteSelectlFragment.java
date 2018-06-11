@@ -76,7 +76,7 @@ public class RequestNoteSelectlFragment extends Fragment {
     private TableLayout mDialogView;//对话框视图，用于获取视图中数据
 
     private RelativeLayout mCheckBox;//用于显示复选框标题
-
+    private RelativeLayout mPriceLayout;//显示单价表头
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -109,7 +109,8 @@ public class RequestNoteSelectlFragment extends Fragment {
 
         mCheckBox = (RelativeLayout) view.findViewById(R.id.commodity_item_header_select);
         mCheckBox.setVisibility(View.VISIBLE);
-
+        mPriceLayout = (RelativeLayout) view.findViewById(R.id.commodity_item_header_price);
+        mPriceLayout.setVisibility(View.VISIBLE);
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         mListView.setLayoutManager(manager);
         getCommodityList();

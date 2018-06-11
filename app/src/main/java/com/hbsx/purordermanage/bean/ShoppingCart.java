@@ -14,6 +14,17 @@ public class ShoppingCart extends DataSupport {
     private String commodityName;
     private Unit unit;
     private Float purchaseNum;
+    private Float purchasePrice;
+
+    public Float getPurchasePrice() {
+        return purchasePrice;
+    }
+
+    public void setPurchasePrice(Float purchasePrice) {
+        this.purchasePrice = purchasePrice;
+    }
+
+
 
     public String getObjectId() {
         return objectId;

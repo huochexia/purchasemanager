@@ -23,16 +23,23 @@ import com.hbsx.purordermanage.Purchase.PurchaseMainActivity;
 import com.hbsx.purordermanage.Request.RequestNoteMainActivity;
 import com.hbsx.purordermanage.Supply.SupplyMainActivity;
 import com.hbsx.purordermanage.base.BaseActivity;
+import com.hbsx.purordermanage.bean.Commodity;
+import com.hbsx.purordermanage.bean.PurchaseOrder;
 import com.hbsx.purordermanage.bean.Roles;
 import com.hbsx.purordermanage.bean.User;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobQueryResult;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.QueryListener;
+import cn.bmob.v3.listener.SQLQueryListener;
+import cn.bmob.v3.listener.UpdateListener;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -58,47 +65,11 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
 
         mImageView = (ImageView) findViewById(R.id.bing_pic_img);
+
         loadBingPic();
-
-//        mainLayout = (RelativeLayout) findViewById(R.id.activity_main);
-//        mainLayout.setBackground(getWeekPic());
-//        repairPW = (FloatingActionButton) findViewById(R.id.repair_pw_text);
-//        repairPW.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                // 关闭延时线程
-//                handler.removeCallbacks(runnable);
-////                Intent intent = new Intent(MainActivity.this, RepairPassWordActivity.class);
-//                startActivity(RepairPassWordActivity.class, null, true);
-//            }
-//        });
-
         getlocalUser();
-    }
 
-//    private Drawable getWeekPic() {
-//
-//        Calendar cal = Calendar.getInstance();
-//        int i = cal.get(Calendar.DAY_OF_WEEK);
-//        switch (i) {
-//            case 1:
-//                return this.getResources().getDrawable(R.drawable.sunday);
-//            case 2:
-//                return this.getResources().getDrawable(R.drawable.monday);
-//            case 3:
-//                return this.getResources().getDrawable(R.drawable.tuesday);
-//            case 4:
-//                return this.getResources().getDrawable(R.drawable.wednesday);
-//            case 5:
-//                return this.getResources().getDrawable(R.drawable.thursday);
-//            case 6:
-//                return this.getResources().getDrawable(R.drawable.friday);
-//            case 7:
-//                return this.getResources().getDrawable(R.drawable.saturday);
-//
-//        }
-//        return null;
-//    }
+    }
 
 
     /**
@@ -218,4 +189,5 @@ private void loadBingPic() {
         Request request = new Request.Builder().url(address).build();
         client.newCall(request).enqueue(callback);
     }
+
 }

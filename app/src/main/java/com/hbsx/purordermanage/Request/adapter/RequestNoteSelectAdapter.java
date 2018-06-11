@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -80,6 +81,7 @@ public class RequestNoteSelectAdapter extends RecyclerView.Adapter<RequestNoteSe
         holder.mSerialNumber.setText(String.valueOf(position + 1));
         holder.mName.setText(commodity.getCommName());
         holder.mUnit.setText(commodity.getUnit().getUnitName());
+        holder.mPriceet.setText(commodity.getPrice()+"");
         holder.mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -145,6 +147,8 @@ public class RequestNoteSelectAdapter extends RecyclerView.Adapter<RequestNoteSe
         TextView mSerialNumber,mName, mUnit;
         CheckBox mCheckBox;
         RelativeLayout mCheckBoxLayout;
+        RelativeLayout mPriceLayout;
+        EditText mPriceet;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -157,6 +161,11 @@ public class RequestNoteSelectAdapter extends RecyclerView.Adapter<RequestNoteSe
             mCheckBoxLayout.setVisibility(View.VISIBLE);
             mCheckBox = (CheckBox) itemView.findViewById(R.id.commodity_item_content_select_tv);
 
+            mPriceLayout = (RelativeLayout) itemView.findViewById(R.id.commodity_item_content_price);
+            mPriceLayout.setVisibility(View.VISIBLE);
+            mPriceet = (EditText) itemView.findViewById(R.id.commodity_item_content_price_tv);
+            mPriceet.setEnabled(false);
+            mPriceet.setBackground(null);
         }
 
         @Override

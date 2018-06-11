@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <litepal>
-    <dbname value ="ShoppingCart"></dbname>
-    <version value="3"></version>
+    <dbname value ="ShoppingCart"/>
+    <version value="4"/>
     <list>
-        <mapping class ="com.hbsx.purordermanage.bean.ShoppingCart"></mapping>
-        <mapping class ="com.hbsx.purordermanage.bean.Unit"></mapping>
+        <mapping class ="com.hbsx.purordermanage.bean.ShoppingCart"/>
+        <mapping class ="com.hbsx.purordermanage.bean.Unit"/>
     </list>
 </litepal>
