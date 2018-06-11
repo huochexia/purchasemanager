@@ -29,6 +29,10 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.UpdateListener;
+import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2018/3/25 0025.
@@ -89,7 +93,7 @@ public class CalculateActivity extends BaseActivity {
         mEndDateBtn = (Button) findViewById(R.id.btn_end_date);
         mCalculateBtn = (Button) findViewById(R.id.btn_calculate_total);
         mMeragerBtn = (Button) findViewById(R.id.btn_merge);
-
+        mMeragerBtn.setVisibility(View.VISIBLE);
         mStartText = (TextView) findViewById(R.id.tv_start_date);
         mEndText = (TextView) findViewById(R.id.tv_end_date);
         mOriginal = (TextView) findViewById(R.id.original_summer);
@@ -131,7 +135,7 @@ public class CalculateActivity extends BaseActivity {
                 builder1.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        getMerge(mStartText.getText().toString(), mEndText.getText().toString());
+                         getMerge(mStartText.getText().toString(), mEndText.getText().toString());
                     }
                 });
                 builder1.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -207,24 +211,30 @@ public class CalculateActivity extends BaseActivity {
                     break;
                 case MERGE:
                     List<PurchaseOrder> mergeList = (List<PurchaseOrder>) msg.getData().getSerializable("merge");
-                    int length = mergeList.size();
-                    for (int i = 0; i < length; i++) {
-                        PurchaseOrder order = mergeList.get(i);
-                        float a = order.getActualAgain();
-                        float b = order.getActualNum();
-                        if (a!=b) {
-                            String objectId = order.getObjectId();
-                            order.setActualNum(order.getActualAgain());
-                            order.setPurchaseNum(order.getActualAgain());
-                            order.update(objectId, new UpdateListener() {
+                    Observable.from(mergeList)
+                            .subscribeOn(Schedulers.io())
+                            .filter(new Func1<PurchaseOrder, Boolean>() {
                                 @Override
-                                public void done(BmobException e) {
+                                public Boolean call(PurchaseOrder purchaseOrder) {
+                                    return !purchaseOrder.getActualNum().equals(purchaseOrder.getActualAgain());
+                                }
+                            })
+                            .subscribe(new Action1<PurchaseOrder>() {
+                                @Override
+                                public void call(PurchaseOrder order) {
+                                    String objectId = order.getObjectId();
+                                    order.setActualNum(order.getActualAgain());
+                                    float f =order.getActualAgain();
+                                    int i = (int)f;
+                                    order.setPurchaseNum((float) i);
+                                    order.update(objectId, new UpdateListener() {
+                                        @Override
+                                        public void done(BmobException e) {
 
+                                        }
+                                    });
                                 }
                             });
-                        }
-
-                    }
                     break;
 
             }
