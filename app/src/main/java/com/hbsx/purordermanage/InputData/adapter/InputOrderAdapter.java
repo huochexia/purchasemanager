@@ -41,18 +41,18 @@ public class InputOrderAdapter extends RecyclerView.Adapter<InputOrderAdapter.Vi
     private List<PurchaseOrder> mPurchaseOrders;
     private int state;
     private SharedPreferences shared;
-    Map<Integer,Boolean> select = new HashMap<>();
+    Map<Integer, Boolean> select = new HashMap<>();
 
 
     /**
      * 通过构造方法获取数据源
      */
 
-    public InputOrderAdapter(List<PurchaseOrder> list, int state,Context context) {
+    public InputOrderAdapter(List<PurchaseOrder> list, int state, Context context) {
         this.mPurchaseOrders = list;
         this.state = state;
         mContext = context;
-        shared = mContext.getSharedPreferences("oldPrice",Context.MODE_PRIVATE);
+        shared = mContext.getSharedPreferences("oldPrice", Context.MODE_PRIVATE);
         RefreshMap();
     }
 
@@ -83,7 +83,7 @@ public class InputOrderAdapter extends RecyclerView.Adapter<InputOrderAdapter.Vi
         if (position % 2 == 0) {
             holder.mContentLayout.setBackgroundColor(Color.parseColor("#FF60C1F4"));
         }
-        holder.mSerialNumber.setText(String.valueOf(position+1));
+        holder.mSerialNumber.setText(String.valueOf(position + 1));
         holder.mName.setText(purchaseOrder.getCommodityName());
         holder.mUnit.setText(purchaseOrder.getCommodityUnit());
         holder.mActualNumLayout.setVisibility(View.VISIBLE);
@@ -92,11 +92,19 @@ public class InputOrderAdapter extends RecyclerView.Adapter<InputOrderAdapter.Vi
         holder.mActualNum.setText(purchaseOrder.getActualAgain().toString());
         holder.mPriceLayout.setVisibility(View.VISIBLE);
         holder.mPrice.setEnabled(false);
+        holder.mName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(mContext, "历史价格："+shared.getFloat(purchaseOrder.getCommodityName(), 0.0f)
+                        , Toast.LENGTH_SHORT).show();
+            }
+        });
         holder.mPrice.setBackground(null);
         holder.mPrice.setText(purchaseOrder.getPrice().toString());
-        if (shared.getFloat(purchaseOrder.getCommodityName(), 0.0f) - purchaseOrder.getPrice() < 0) {
+        float compate =shared.getFloat(purchaseOrder.getCommodityName(), 0.0f) - purchaseOrder.getPrice();
+        if ( compate< 0) {
             holder.mPrice.setTextColor(Color.RED);
-        }else {
+        } else if(compate>0){
             holder.mPrice.setTextColor(Color.BLUE);
         }
         switch (state) {
@@ -106,7 +114,7 @@ public class InputOrderAdapter extends RecyclerView.Adapter<InputOrderAdapter.Vi
                 holder.mSelect.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        select.put(position,isChecked);
+                        select.put(position, isChecked);
                         if (isChecked) {
 
                             LookAndInputOrderFragment.addSelectedOrders(purchaseOrder);
@@ -115,8 +123,8 @@ public class InputOrderAdapter extends RecyclerView.Adapter<InputOrderAdapter.Vi
                         }
                     }
                 });
-                if(select.get(position)==null){
-                    select.put(position,false);
+                if (select.get(position) == null) {
+                    select.put(position, false);
                 }
                 holder.mSelect.setChecked(select.get(position));
                 break;
@@ -132,13 +140,15 @@ public class InputOrderAdapter extends RecyclerView.Adapter<InputOrderAdapter.Vi
     public int getItemCount() {
         return mPurchaseOrders.size();
     }
+
     /**
      * 还原选择
+     *
      * @return
      */
-    public void RefreshMap(){
-        for (int i = 0 ;i<mPurchaseOrders.size();i++){
-            select.put(i,false);
+    public void RefreshMap() {
+        for (int i = 0; i < mPurchaseOrders.size(); i++) {
+            select.put(i, false);
         }
     }
 
@@ -147,7 +157,7 @@ public class InputOrderAdapter extends RecyclerView.Adapter<InputOrderAdapter.Vi
      */
     public class ViewHolder extends RecyclerView.ViewHolder {
         LinearLayout mContentLayout;
-        TextView mSerialNumber,mName, mUnit;
+        TextView mSerialNumber, mName, mUnit;
         RelativeLayout mActualNumLayout, mSelectedLayout, mPriceLayout;
         EditText mActualNum, mPrice;
         CheckBox mSelect;
@@ -167,7 +177,7 @@ public class InputOrderAdapter extends RecyclerView.Adapter<InputOrderAdapter.Vi
                 case 3:
                     mSelectedLayout = (RelativeLayout) itemView.findViewById(R.id.commodity_item_content_select);
 
-                    mSelect= (CheckBox) itemView.findViewById(R.id.commodity_item_content_select_tv);
+                    mSelect = (CheckBox) itemView.findViewById(R.id.commodity_item_content_select_tv);
                     break;
 
             }
