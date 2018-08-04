@@ -132,11 +132,9 @@ public class Utility {
      * @throws ParseException
      */
     public static boolean compareTime(String time) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");    //设置时间格式
-        Date beginDate = sdf.parse(getCurrentDateString() + time);
-        Date curDate = new Date(System.currentTimeMillis());//获取当前时间
-
-        if (beginDate.compareTo(curDate) < 0) {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");    //设置时间格式
+        String curDate = sdf.format(new Date(System.currentTimeMillis()));//获取当前时间
+        if (curDate.compareTo(time) < 0) {
             return false;
         }
         return true;

@@ -5,5 +5,12 @@
     android:orientation="vertical">
     <include layout="@layout/toolbar_layout"/>
     <include layout="@layout/calendar"/>
-
+    <Button
+        android:id="@+id/btn_refresh_force"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:textSize="18sp"
+        android:text="刷新确认"
+        android:enabled="false"/>
 </LinearLayout>

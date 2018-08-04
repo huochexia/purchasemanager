@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.Toolbar;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
@@ -14,24 +16,42 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.hbsx.purordermanage.InputData.adapter.InputOrderAdapter;
 import com.hbsx.purordermanage.base.BaseActivity;
 import com.hbsx.purordermanage.R;
+import com.hbsx.purordermanage.bean.PurchaseOrder;
+import com.hbsx.purordermanage.utils.Utility;
 import com.hbsx.purordermanage.utils.calendar.CalendarAdapter;
 
+import java.io.Serializable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+
+import cn.bmob.v3.BmobBatch;
+import cn.bmob.v3.BmobObject;
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.datatype.BatchResult;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.QueryListListener;
 
 /**
  * 录入数据功能应用主程序，日历显示activity，点击日期进入供货商选择界面
  */
-public class InputDataMainActivity extends BaseActivity {
+public class InputDataMainActivity extends BaseActivity implements OnClickListener {
+
 
     private Toolbar toolbar;
-
+    private Button refreshBtn;
     private GestureDetector gestureDetector = null;
     private CalendarAdapter calV = null;
     private GridView gridView = null;
@@ -59,12 +79,17 @@ public class InputDataMainActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_examine_main);
-
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("录入系统");
         setSupportActionBar(toolbar);
-
-
+        //强制确认按钮
+        refreshBtn = findViewById(R.id.btn_refresh_force);
+        refreshBtn.setOnClickListener(this);
+        try {
+            refreshBtn.setEnabled(Utility.compareTime("10:30:00"));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         gestureDetector = new GestureDetector(this, new MyGestureListener());
         calV = new CalendarAdapter(this, getResources(), new Date(), jumpMonth, jumpYear,
                 year_c, month_c, day_c);
@@ -171,6 +196,87 @@ public class InputDataMainActivity extends BaseActivity {
         });
     }
 
+    @Override
+    public void onClick(View v) {
+        getPurchaseOrderList(2);
+    }
+
+    /**
+     * 获取订单列表
+     */
+    private void getPurchaseOrderList(int state) {
+        List<BmobQuery<PurchaseOrder>> and = new ArrayList<>();
+        //订单日期
+        BmobQuery<PurchaseOrder> queryDate = new BmobQuery<>();
+        System.out.println(Utility.getDateString(Utility.getForwardDate(1)));
+        queryDate.addWhereEqualTo("orderDate", Utility.getDateString(Utility.getForwardDate(1)));
+        and.add(queryDate);
+        //订单状态
+        BmobQuery<PurchaseOrder> queryState = new BmobQuery<>();
+        queryState.addWhereEqualTo("orderState", state);
+        and.add(queryState);
+
+        BmobQuery<PurchaseOrder> query = new BmobQuery<>();
+        query.and(and);
+        query.order("category");
+        query.findObjects(new FindListener<PurchaseOrder>() {
+            @Override
+            public void done(final List<PurchaseOrder> list, BmobException e) {
+                if (e == null) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Message msg = new Message();
+                            msg.what = SUPPLY_ORDER;
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("orders", (Serializable) list);
+                            msg.setData(bundle);
+                            handler.sendMessage(msg);
+                        }
+                    }).start();
+                }
+            }
+        });
+    }
+
+    public static final int SUPPLY_ORDER = 0;
+    private List<PurchaseOrder> mPurchaseOrderList;
+    public Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case SUPPLY_ORDER:
+                    mPurchaseOrderList = (List<PurchaseOrder>) msg.getData().getSerializable("orders");
+                    if (mPurchaseOrderList.size() > 0) {
+                        List<BmobObject> objects = new ArrayList<>();
+                        for (PurchaseOrder order : mPurchaseOrderList) {
+                            order.setOrderState(3);
+                            objects.add(order);
+                        }
+                        new BmobBatch().updateBatch(objects).doBatch(new QueryListListener<BatchResult>() {
+                            @Override
+                            public void done(List<BatchResult> list, BmobException e) {
+                                if (e == null) {
+                                    Toast.makeText(InputDataMainActivity.this, "成功确认" + list.size() + "项订单！"
+                                            , Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(InputDataMainActivity.this, "确认失败" + e.getMessage()
+                                            , Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    } else {
+                        Toast.makeText(InputDataMainActivity.this, "没有需要确认的订单！"
+                                , Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+            }
+        }
+    };
+
+    /**
+     * 内部类
+     */
     private class MyGestureListener extends
             GestureDetector.SimpleOnGestureListener {
         // 用户（轻触触摸屏后）松开，由�?��1个MotionEvent ACTION_UP触发
@@ -262,7 +368,7 @@ public class InputDataMainActivity extends BaseActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
             if ((System.currentTimeMillis() - exitTime) > 3000) {
-                toast("再按一次退出程序！",true);
+                toast("再按一次退出程序！", true);
                 exitTime = System.currentTimeMillis();
             } else {
                 finish();
