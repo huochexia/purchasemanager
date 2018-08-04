@@ -1,5 +1,7 @@
 package com.hbsx.purordermanage.InputData;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -61,7 +63,7 @@ public class LookAndInputOrderFragment extends Fragment {
     private int mOrderState;
     private String mOrderDate;
     private String provider;
-
+    private SharedPreferences.Editor shared;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +72,7 @@ public class LookAndInputOrderFragment extends Fragment {
             mOrderState = bundle.getInt(ORDER_STATE);
             mOrderDate = bundle.getString(ORDER_DATE);
             provider = bundle.getString("provider");
+            shared = getActivity().getSharedPreferences("oldPrice", Context.MODE_PRIVATE).edit();
         }
     }
 
@@ -79,6 +82,7 @@ public class LookAndInputOrderFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_input_order, container, false);
         initView(view);
         getPurchaseOrderList(mOrderState);
+
         return view;
     }
 
@@ -103,7 +107,9 @@ public class LookAndInputOrderFragment extends Fragment {
                         for (PurchaseOrder order : mSelectedOrders) {
                             order.setOrderState(4);
                             objects.add(order);
+                            shared.putFloat(order.getCommodityName(), order.getPrice());
                         }
+                        shared.apply();
                         mPurchaseOrderList.removeAll(mSelectedOrders);
                         mAdapter.notifyDataSetChanged();
                         mAdapter.RefreshMap();
@@ -222,7 +228,7 @@ public class LookAndInputOrderFragment extends Fragment {
             switch (msg.what) {
                 case SUPPLY_ORDER:
                     mPurchaseOrderList = (List<PurchaseOrder>) msg.getData().getSerializable("orders");
-                    mAdapter = new InputOrderAdapter(mPurchaseOrderList, mOrderState);
+                    mAdapter = new InputOrderAdapter(mPurchaseOrderList, mOrderState,getActivity());
                     mRecyclerView.setAdapter(mAdapter);
 
                     if (mOrderState == 4) {//如果是已录入，则计算总额

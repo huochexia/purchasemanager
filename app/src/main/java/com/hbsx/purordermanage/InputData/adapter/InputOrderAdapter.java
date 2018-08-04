@@ -1,6 +1,7 @@
 package com.hbsx.purordermanage.InputData.adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -39,7 +40,7 @@ public class InputOrderAdapter extends RecyclerView.Adapter<InputOrderAdapter.Vi
     private Context mContext;
     private List<PurchaseOrder> mPurchaseOrders;
     private int state;
-
+    private SharedPreferences shared;
     Map<Integer,Boolean> select = new HashMap<>();
 
 
@@ -47,9 +48,11 @@ public class InputOrderAdapter extends RecyclerView.Adapter<InputOrderAdapter.Vi
      * 通过构造方法获取数据源
      */
 
-    public InputOrderAdapter(List<PurchaseOrder> list, int state) {
+    public InputOrderAdapter(List<PurchaseOrder> list, int state,Context context) {
         this.mPurchaseOrders = list;
         this.state = state;
+        mContext = context;
+        shared = mContext.getSharedPreferences("oldPrice",Context.MODE_PRIVATE);
         RefreshMap();
     }
 
@@ -91,7 +94,11 @@ public class InputOrderAdapter extends RecyclerView.Adapter<InputOrderAdapter.Vi
         holder.mPrice.setEnabled(false);
         holder.mPrice.setBackground(null);
         holder.mPrice.setText(purchaseOrder.getPrice().toString());
-
+        if (shared.getFloat(purchaseOrder.getCommodityName(), 0.0f) - purchaseOrder.getPrice() < 0) {
+            holder.mPrice.setTextColor(Color.RED);
+        }else {
+            holder.mPrice.setTextColor(Color.BLUE);
+        }
         switch (state) {
             case 3:
                 holder.mSelectedLayout.setVisibility(View.VISIBLE);
