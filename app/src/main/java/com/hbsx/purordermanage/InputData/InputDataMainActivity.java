@@ -86,7 +86,8 @@ public class InputDataMainActivity extends BaseActivity implements OnClickListen
         refreshBtn = findViewById(R.id.btn_refresh_force);
         refreshBtn.setOnClickListener(this);
         try {
-            refreshBtn.setEnabled(Utility.compareTime("10:30:00"));
+            if (Utility.compareTime("10:30:00"))
+                refreshBtn.setVisibility(View.VISIBLE);
         } catch (ParseException e) {
             e.printStackTrace();
         }
