@@ -10,7 +10,7 @@
         android:id="@+id/examine_actual_number_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"></android.support.v7.widget.RecyclerView>
+        android:layout_weight="1"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

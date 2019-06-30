@@ -93,7 +93,7 @@ public class CalculateActivity extends BaseActivity {
         mEndDateBtn = (Button) findViewById(R.id.btn_end_date);
         mCalculateBtn = (Button) findViewById(R.id.btn_calculate_total);
         mMeragerBtn = (Button) findViewById(R.id.btn_merge);
-//        mMeragerBtn.setVisibility(View.VISIBLE);
+        mMeragerBtn.setVisibility(View.VISIBLE);
         mStartText = (TextView) findViewById(R.id.tv_start_date);
         mEndText = (TextView) findViewById(R.id.tv_end_date);
         mOriginal = (TextView) findViewById(R.id.original_summer);

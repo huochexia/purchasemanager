@@ -83,6 +83,7 @@ public class ExamineOrderAdapter extends RecyclerView.Adapter<ExamineOrderAdapte
         holder.mPrice.setEnabled(false);
         holder.mPrice.setBackground(null);
         holder.mPrice.setText(purchaseOrder.getPrice().toString());
+
         //实数
         holder.mActualNumLayout.setVisibility(View.VISIBLE);
         holder.mActualNum.setText(purchaseOrder.getActualAgain().toString());
@@ -175,7 +176,7 @@ public class ExamineOrderAdapter extends RecyclerView.Adapter<ExamineOrderAdapte
     public class ViewHolder extends RecyclerView.ViewHolder {
         LinearLayout mContentLayout;
         TextView mSerialNumber,mName, mUnit;
-        RelativeLayout mActualNumLayout, mPriceLayout;
+        RelativeLayout mActualNumLayout, mPriceLayout,mDingLiangLayout;
         EditText mActualNum,  mPrice;
 
         public ViewHolder(View itemView) {

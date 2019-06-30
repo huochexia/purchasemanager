@@ -18,7 +18,7 @@ public class POManageApplication extends Application {
         super.onCreate();
         context = getApplicationContext();
         //通过AppId连接Bmob云端
-        Bmob.initialize(this, "640680c69663ae2d2c1df82566af1fdc");
+        Bmob.initialize(this, "380957d6de57719b6496a4f78dd09a60");
         // 使用推送服务时的初始化操作
         BmobInstallation.getCurrentInstallation().save();
         // 启动推送服务

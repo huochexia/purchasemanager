@@ -105,6 +105,8 @@ public class ExamineOrderFragment extends Fragment {
         if (mOrderState == 2) {
             mCommitActualNum.setVisibility(View.GONE);
         }
+
+
         mActualNumLayout = (RelativeLayout) view.findViewById(R.id.commodity_item_header_actualnum);
         mActualNumLayout.setVisibility(View.VISIBLE);
 
