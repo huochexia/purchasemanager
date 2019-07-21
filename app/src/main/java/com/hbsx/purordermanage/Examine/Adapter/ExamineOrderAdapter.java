@@ -86,7 +86,7 @@ public class ExamineOrderAdapter extends RecyclerView.Adapter<ExamineOrderAdapte
 
         //实数
         holder.mActualNumLayout.setVisibility(View.VISIBLE);
-        holder.mActualNum.setText(purchaseOrder.getActualAgain().toString());
+        holder.mActualNum.setText(purchaseOrder.getActualNum().toString());
 
         if (purchaseOrder.getOrderState() >=2) {//已经验收且已确认或已录入
             holder.mActualNum.setEnabled(false);

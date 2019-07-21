@@ -89,7 +89,7 @@ public class InputOrderAdapter extends RecyclerView.Adapter<InputOrderAdapter.Vi
         holder.mActualNumLayout.setVisibility(View.VISIBLE);
         holder.mActualNum.setEnabled(false);
         holder.mActualNum.setBackground(null);
-        holder.mActualNum.setText(purchaseOrder.getActualAgain().toString());
+        holder.mActualNum.setText(purchaseOrder.getActualNum().toString());
         holder.mPriceLayout.setVisibility(View.VISIBLE);
         holder.mPrice.setEnabled(false);
         holder.mName.setOnClickListener(new View.OnClickListener() {
