@@ -108,7 +108,7 @@ public class OtherOrderAdapter extends RecyclerView.Adapter<OtherOrderAdapter.Vi
         //实数
         holder.mActualNumLayout.setVisibility(View.VISIBLE);
         holder.mActualNum.setText(purchaseOrder.getActualAgain().toString());
-        if (purchaseOrder.getOrderState() < 4) {
+        if (purchaseOrder.getOrderState() <= 4) {
             holder.mActualNum.setEnabled(true);
         }else{
             holder.mActualNum.setEnabled(false);
