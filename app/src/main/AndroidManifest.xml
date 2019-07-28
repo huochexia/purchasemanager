@@ -115,6 +115,9 @@
             android:name=".Comprehensive.RequestAndExamineActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".Comprehensive.CheckAndOtherActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".FirstCheck.EmployeeListActivity"
             android:screenOrientation="portrait" />
         <activity

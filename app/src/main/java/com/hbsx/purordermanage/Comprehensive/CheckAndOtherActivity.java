@@ -14,6 +14,7 @@ import com.hbsx.purordermanage.ActivityCollector;
 import com.hbsx.purordermanage.AgainCheck.AgainCheckMainActivity;
 import com.hbsx.purordermanage.Examine.ExamineMainActivity;
 import com.hbsx.purordermanage.InputData.InputDataMainActivity;
+import com.hbsx.purordermanage.Other.OtherMainActivity;
 import com.hbsx.purordermanage.Purchase.SendToProviderActivity;
 import com.hbsx.purordermanage.R;
 import com.hbsx.purordermanage.RepairPassWordActivity;
@@ -27,11 +28,11 @@ import cn.bmob.v3.BmobUser;
  * Created by Administrator on 2017/3/5 0005.
  */
 
-public class RequestPurchaseExamineInputActivity extends BaseActivity
+public class CheckAndOtherActivity extends BaseActivity
         implements View.OnClickListener {
     Toolbar toolbar;
-    ImageButton mRequestNote, mSendTo, mExamine, mInput;
-    CardView mCheckCard;
+    ImageButton mRequestNote, mSendTo, mCheck, mOther;
+    CardView mLoad,mExamine;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,33 +50,35 @@ public class RequestPurchaseExamineInputActivity extends BaseActivity
     private void initEvent() {
         mRequestNote.setOnClickListener(this);
         mSendTo.setOnClickListener(this);
-        mExamine.setOnClickListener(this);
-        mInput.setOnClickListener(this);
+        mCheck.setOnClickListener(this);
+        mOther.setOnClickListener(this);
     }
 
     private void initView() {
-        mCheckCard = (CardView) findViewById(R.id.cw_check);
-        mCheckCard.setVisibility(View.GONE);
+        mLoad = findViewById(R.id.cw_loading);
+        mLoad.setVisibility(View.GONE);
+        mExamine = findViewById(R.id.cw_accept);
+        mExamine.setVisibility(View.GONE);
         mRequestNote = (ImageButton) findViewById(R.id.compre_request_note);
         mSendTo = (ImageButton) findViewById(R.id.compre_purchase_order);
-        mExamine = (ImageButton) findViewById(R.id.compre_examine_order);
-        mInput = (ImageButton) findViewById(R.id.compre_input_order);
+        mCheck = (ImageButton) findViewById(R.id.check_request_note);
+        mOther = (ImageButton) findViewById(R.id.compre_input_order);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.compre_request_note:
-                RequestNoteMainActivity.actionStart(RequestPurchaseExamineInputActivity.this);
+                RequestNoteMainActivity.actionStart(CheckAndOtherActivity.this);
                 break;
             case R.id.compre_purchase_order:
-                SendToProviderActivity.actionStart(RequestPurchaseExamineInputActivity.this);
+                SendToProviderActivity.actionStart(CheckAndOtherActivity.this);
                 break;
-            case R.id.compre_examine_order:
-                ExamineMainActivity.actionStart(RequestPurchaseExamineInputActivity.this);
+            case R.id.check_request_note:
+                AgainCheckMainActivity.actionStart(CheckAndOtherActivity.this);
                 break;
             case R.id.compre_input_order:
-                InputDataMainActivity.actionStart(RequestPurchaseExamineInputActivity.this);
+                OtherMainActivity.actionStart(CheckAndOtherActivity.this);
                 break;
 
         }
@@ -106,7 +109,7 @@ public class RequestPurchaseExamineInputActivity extends BaseActivity
      * 启动
      */
     public static void actionStart(Context mContext) {
-        Intent intent = new Intent(mContext, RequestPurchaseExamineInputActivity.class);
+        Intent intent = new Intent(mContext, CheckAndOtherActivity.class);
         mContext.startActivity(intent);
     }
 }

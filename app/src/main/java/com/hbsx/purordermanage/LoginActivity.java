@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.hbsx.purordermanage.Comprehensive.CheckAndOtherActivity;
 import com.hbsx.purordermanage.Comprehensive.RequestAndExamineActivity;
 import com.hbsx.purordermanage.Comprehensive.RequestPurchaseExamineInputActivity;
 import com.hbsx.purordermanage.Examine.ExamineMainActivity;
@@ -110,7 +111,7 @@ public class LoginActivity extends BaseActivity {
                                     EmployeeListActivity.actionStart(LoginActivity.this);
                                     break;
                                 case "其他":
-                                    OtherMainActivity.actionStart(LoginActivity.this);
+                                    CheckAndOtherActivity.actionStart(LoginActivity.this);
                                     break;
                             }
                             LoginActivity.this.finish();

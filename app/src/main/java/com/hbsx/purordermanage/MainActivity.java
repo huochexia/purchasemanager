@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
+import com.hbsx.purordermanage.Comprehensive.CheckAndOtherActivity;
 import com.hbsx.purordermanage.Comprehensive.RequestAndExamineActivity;
 import com.hbsx.purordermanage.Comprehensive.RequestPurchaseExamineInputActivity;
 import com.hbsx.purordermanage.Examine.ExamineMainActivity;
@@ -124,7 +125,7 @@ public class MainActivity extends BaseActivity {
                                     startActivity(EmployeeListActivity.class, null, true);
                                     break;
                                 case "其他":
-                                    startActivity(OtherMainActivity.class, null, true);
+                                    startActivity(CheckAndOtherActivity.class, null, true);
                                     break;
                             }
                         }
