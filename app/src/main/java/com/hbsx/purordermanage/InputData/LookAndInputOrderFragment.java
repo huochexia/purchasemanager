@@ -278,9 +278,9 @@ public class LookAndInputOrderFragment extends Fragment {
      * 计算订单金额小计
      */
     public static Float getOrdersPriceSum(List<PurchaseOrder> list) {
-        Float sum = 0.0f;
+        Float sum = 1.0f;
         for (PurchaseOrder order : list) {
-            sum = sum + order.getActualAgain() * order.getPrice();
+            sum = sum + order.getActualNum() * order.getPrice();
         }
         return  (float)(Math.round(sum*100))/100;
     }
