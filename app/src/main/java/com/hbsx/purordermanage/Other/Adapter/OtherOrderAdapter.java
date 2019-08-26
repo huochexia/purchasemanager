@@ -129,6 +129,7 @@ public class OtherOrderAdapter extends RecyclerView.Adapter<OtherOrderAdapter.Vi
                 } else {
                     //为了防止因滑动将EditText中内容还原为初始值，将改变存入该item中
                     order.setActualAgain(Float.parseFloat(s + ""));
+                    order.setOrderState(4);
 //                        // 存入数据库
 //                        final String id = order.getObjectId();
 //                        order.update(id, new UpdateListener() {
