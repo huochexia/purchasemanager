@@ -197,6 +197,10 @@ public class LookAndInputOrderFragment extends Fragment {
         BmobQuery<PurchaseOrder> queryState = new BmobQuery<>();
         queryState.addWhereEqualTo("orderState", state);
         and.add(queryState);
+        //订单数量大于0
+        BmobQuery<PurchaseOrder> queryNumber = new BmobQuery<>();
+        queryNumber.addWhereGreaterThan("actualNum",0);
+        and.add(queryNumber);
 
         BmobQuery<PurchaseOrder> query = new BmobQuery<>();
         query.and(and);
@@ -231,7 +235,7 @@ public class LookAndInputOrderFragment extends Fragment {
                     mAdapter = new InputOrderAdapter(mPurchaseOrderList, mOrderState,getActivity());
                     mRecyclerView.setAdapter(mAdapter);
 
-                    if (mOrderState == 4) {//如果是已录入，则计算总额
+                    if (mOrderState == 4 ) {//如果是已录入，则计算总额
                         mItemNums.setText(mPurchaseOrderList.size()+"");
                         Float mTotal = getOrdersPriceSum(mPurchaseOrderList);
                         mPriceTotal.setText(mTotal + " ");
@@ -278,7 +282,7 @@ public class LookAndInputOrderFragment extends Fragment {
      * 计算订单金额小计
      */
     public static Float getOrdersPriceSum(List<PurchaseOrder> list) {
-        Float sum = 1.0f;
+        Float sum = 0.0f;
         for (PurchaseOrder order : list) {
             sum = sum + order.getActualNum() * order.getPrice();
         }
